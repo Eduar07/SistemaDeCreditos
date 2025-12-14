@@ -5,20 +5,12 @@ public class Empleado extends Persona {
     private String rol;
     private double salario;
 
-    // ═══════════════════════════════════════════════════════════
-    //                    CONSTRUCTORES
-    // ═══════════════════════════════════════════════════════════
     
-    /**
-     * Constructor vacío
-     */
     public Empleado() {
-        super(0, "", "", "");  // Valores por defecto
+        super(0, "", "", "");  
     }
     
-    /**
-     * Constructor sin ID
-     */
+  
     public Empleado(String nombre, String documento, String correo, 
                     String rol, double salario) {
         super(0, nombre, documento, correo);
@@ -26,9 +18,7 @@ public class Empleado extends Persona {
         this.salario = salario;
     }
     
-    /**
-     * Constructor completo con ID
-     */
+  
     public Empleado(int id, String nombre, String documento, String correo, 
                     String rol, double salario) {
         super(id, nombre, documento, correo);
@@ -36,10 +26,7 @@ public class Empleado extends Persona {
         this.salario = salario;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //                    GETTERS Y SETTERS
-    // ═══════════════════════════════════════════════════════════
-    
+   
     public String getRol() {
         return rol;
     }
@@ -65,19 +52,13 @@ public class Empleado extends Persona {
         this.salario = salario;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //                    MÉTODO ABSTRACTO
-    // ═══════════════════════════════════════════════════════════
-    
+  
     @Override
     public String getTipo() {
         return "Empleado";
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //                    toString()
-    // ═══════════════════════════════════════════════════════════
-    
+   
     @Override
     public String toString() {
         return String.format(
@@ -86,9 +67,6 @@ public class Empleado extends Persona {
         );
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //                    MÉTODOS DE NEGOCIO
-    // ═══════════════════════════════════════════════════════════
     
     public double calcularSalarioAnual() {
         return salario * 12;
