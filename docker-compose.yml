@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: crediya_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: crediya123
+      MYSQL_DATABASE: crediya_db
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql/crediya_db.sql:/docker-entrypoint-initdb.d/crediya_db.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: crediya_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
