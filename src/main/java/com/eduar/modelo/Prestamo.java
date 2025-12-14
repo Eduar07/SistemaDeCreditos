@@ -1,13 +1,21 @@
 package com.eduar.modelo;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Clase Prestamo - Representa un préstamo del sistema
+ * 
+ * @author Eduar Humberto Guerrero Vergel
+ * @version 1.0
+ */
 public class Prestamo {
-
+    
+    // ═══════════════════════════════════════════════════════════
+    //                        ATRIBUTOS
+    // ═══════════════════════════════════════════════════════════
+    
     private int id;
-
     private Cliente cliente;
     private Empleado empleado;
     private double monto;
@@ -17,13 +25,31 @@ public class Prestamo {
     private String estado;
     private double saldoPendiente;
     private ArrayList<Pago> pagos;
-
+    
+    
+    // ═══════════════════════════════════════════════════════════
+    //                      CONSTRUCTORES
+    // ═══════════════════════════════════════════════════════════
+    
+    /**
+     * Constructor vacío
+     */
     public Prestamo() {
         this.pagos = new ArrayList<>();
         this.estado = "pendiente";
-
     }
-      public Prestamo(Cliente cliente, Empleado empleado, double monto, 
+    
+    /**
+     * Constructor sin ID (para crear nuevos préstamos)
+     * 
+     * @param cliente Cliente que solicita
+     * @param empleado Empleado que aprueba
+     * @param monto Monto del préstamo
+     * @param interes Tasa de interés
+     * @param cuotas Número de cuotas
+     * @param fechaInicio Fecha de inicio
+     */
+    public Prestamo(Cliente cliente, Empleado empleado, double monto, 
                     double interes, int cuotas, LocalDate fechaInicio) {
         this.cliente = cliente;
         this.empleado = empleado;
@@ -35,8 +61,40 @@ public class Prestamo {
         this.saldoPendiente = calcularMontoTotal();
         this.pagos = new ArrayList<>();
     }
-
-
+    
+    /**
+     * Constructor completo con ID (para cargar desde BD/archivo)
+     * 
+     * @param id ID del préstamo
+     * @param cliente Cliente del préstamo
+     * @param empleado Empleado que aprobó
+     * @param monto Monto del préstamo
+     * @param interes Tasa de interés
+     * @param cuotas Número de cuotas
+     * @param fechaInicio Fecha de inicio
+     * @param estado Estado actual
+     * @param saldoPendiente Saldo pendiente
+     */
+    public Prestamo(int id, Cliente cliente, Empleado empleado, double monto,
+                    double interes, int cuotas, LocalDate fechaInicio, 
+                    String estado, double saldoPendiente) {
+        this.id = id;
+        this.cliente = cliente;
+        this.empleado = empleado;
+        this.monto = monto;
+        this.interes = interes;
+        this.cuotas = cuotas;
+        this.fechaInicio = fechaInicio;
+        this.estado = estado;
+        this.saldoPendiente = saldoPendiente;
+        this.pagos = new ArrayList<>();
+    }
+    
+    
+    // ═══════════════════════════════════════════════════════════
+    //                    GETTERS Y SETTERS
+    // ═══════════════════════════════════════════════════════════
+    
     public int getId() {
         return id;
     }
@@ -129,13 +187,30 @@ public class Prestamo {
     public void setPagos(ArrayList<Pago> pagos) {
         this.pagos = pagos;
     }
-     public double calcularMontoTotal() {
+    
+    
+    // ═══════════════════════════════════════════════════════════
+    //                   MÉTODOS DE CÁLCULO
+    // ═══════════════════════════════════════════════════════════
+    
+    /**
+     * Calcula el monto total del préstamo (capital + intereses)
+     */
+    public double calcularMontoTotal() {
         double montoInteres = monto * (interes / 100);
         return monto + montoInteres;
     }
-       public double calcularCuotaMensual() {
+    
+    /**
+     * Calcula el valor de la cuota mensual
+     */
+    public double calcularCuotaMensual() {
         return calcularMontoTotal() / cuotas;
     }
+    
+    /**
+     * Calcula cuántas cuotas se han pagado
+     */
     public int calcularCuotasPagadas() {
         double totalPagado = calcularTotalPagado();
         double cuotaMensual = calcularCuotaMensual();
@@ -145,15 +220,21 @@ public class Prestamo {
         }
         return 0;
     }
-
-      public double calcularTotalPagado() {
+    
+    /**
+     * Calcula el total pagado hasta ahora
+     */
+    public double calcularTotalPagado() {
         double total = 0;
         for (Pago pago : pagos) {
             total += pago.getMonto();
         }
         return total;
     }
-
+    
+    /**
+     * Calcula el porcentaje pagado del préstamo
+     */
     public double calcularPorcentajePagado() {
         double montoTotal = calcularMontoTotal();
         double totalPagado = calcularTotalPagado();
@@ -164,7 +245,15 @@ public class Prestamo {
         return 0;
     }
     
-      public void registrarPago(Pago pago) {
+    
+    // ═══════════════════════════════════════════════════════════
+    //                   MÉTODOS DE NEGOCIO
+    // ═══════════════════════════════════════════════════════════
+    
+    /**
+     * Registra un pago y actualiza el saldo pendiente
+     */
+    public void registrarPago(Pago pago) {
         if (pago == null) {
             throw new IllegalArgumentException("El pago no puede ser null");
         }
@@ -174,7 +263,6 @@ public class Prestamo {
         }
         
         pagos.add(pago);
-        
         saldoPendiente -= pago.getMonto();
         
         if (saldoPendiente <= 0) {
@@ -182,32 +270,45 @@ public class Prestamo {
             saldoPendiente = 0;
         }
     }
-
-      public boolean estaVencido() {
+    
+    /**
+     * Verifica si el préstamo está vencido
+     */
+    public boolean estaVencido() {
         if (estado.equals("pagado")) {
             return false;
         }
         
-        // Calcular fecha de vencimiento (fecha inicio + número de cuotas en meses)
         LocalDate fechaVencimiento = fechaInicio.plusMonths(cuotas);
         return LocalDate.now().isAfter(fechaVencimiento);
     }
     
-     public boolean estaAlDia() {
+    /**
+     * Verifica si el préstamo está al día
+     */
+    public boolean estaAlDia() {
         int cuotasPagadas = calcularCuotasPagadas();
         
-        // Calcular meses transcurridos desde el inicio
         long mesesTranscurridos = java.time.temporal.ChronoUnit.MONTHS.between(
             fechaInicio, LocalDate.now()
         );
         
         return cuotasPagadas >= mesesTranscurridos;
     }
-     public int calcularCuotasPendientes() {
+    
+    /**
+     * Obtiene el número de cuotas pendientes
+     */
+    public int calcularCuotasPendientes() {
         return cuotas - calcularCuotasPagadas();
     }
-
-     @Override
+    
+    
+    // ═══════════════════════════════════════════════════════════
+    //                      toString()
+    // ═══════════════════════════════════════════════════════════
+    
+    @Override
     public String toString() {
         return String.format(
             "Préstamo #%d\n" +
@@ -218,8 +319,8 @@ public class Prestamo {
             "  Estado: %s | Saldo pendiente: $%,.2f\n" +
             "  Fecha inicio: %s | Pagos realizados: %d",
             id, 
-            cliente.getNombre(), 
-            empleado.getNombre(),
+            cliente != null ? cliente.getNombre() : "N/A", 
+            empleado != null ? empleado.getNombre() : "N/A",
             monto, interes, cuotas,
             calcularMontoTotal(), calcularCuotaMensual(),
             estado, saldoPendiente,
