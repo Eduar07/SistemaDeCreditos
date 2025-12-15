@@ -1,8 +1,10 @@
 package com.eduar.servicio;
-
+import java.util.Map;
+import java.util.stream.Collectors;
 import com.eduar.modelo.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Servicio para generar reportes del sistema
@@ -267,6 +269,259 @@ public void generarReportePrestamosVencidos() {
     
     System.out.println("\n⚠️  Total préstamos vencidos: " + vencidos.size());
     System.out.println("⚠️  Cartera vencida: $" + String.format("%,.2f", totalVencido));
+    System.out.println();
+}
+
+// ═══════════════════════════════════════════════════════════
+//          REPORTES CON STREAMS Y LAMBDAS (ISSUE #26)
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Obtiene préstamos activos (estado = pendiente) usando Stream filter
+ */
+public ArrayList<Prestamo> obtenerPrestamosActivos() {
+    return prestamoServicio.listarTodos().stream()
+        .filter(p -> p.getEstado().equalsIgnoreCase("pendiente"))
+        .collect(Collectors.toCollection(ArrayList::new));
+}
+
+/**
+ * Obtiene préstamos vencidos usando Stream filter
+ */
+public ArrayList<Prestamo> obtenerPrestamosVencidosConStream() {
+    return prestamoServicio.listarTodos().stream()
+        .filter(p -> p.getEstado().equalsIgnoreCase("vencido") || p.estaVencido())
+        .collect(Collectors.toCollection(ArrayList::new));
+}
+
+/**
+ * Obtiene clientes morosos (con préstamos vencidos)
+ */
+public ArrayList<Cliente> obtenerClientesMorosos() {
+    return prestamoServicio.listarTodos().stream()
+        .filter(p -> p.getEstado().equalsIgnoreCase("vencido") || p.estaVencido())
+        .map(Prestamo::getCliente)
+        .distinct()
+        .collect(Collectors.toCollection(ArrayList::new));
+}
+
+/**
+ * Calcula total prestado por cada empleado usando groupingBy
+ */
+public Map<String, Double> obtenerTotalPrestadoPorEmpleado() {
+    return prestamoServicio.listarTodos().stream()
+        .collect(Collectors.groupingBy(
+            p -> p.getEmpleado().getNombre(),
+            Collectors.summingDouble(Prestamo::getMonto)
+        ));
+}
+
+/**
+ * Genera reporte de préstamos activos
+ */
+public void generarReportePrestamosActivos() {
+    System.out.println("\n╔═══════════════════════════════════════╗");
+    System.out.println("║    REPORTE DE PRÉSTAMOS ACTIVOS      ║");
+    System.out.println("╚═══════════════════════════════════════╝\n");
+    
+    ArrayList<Prestamo> activos = obtenerPrestamosActivos();
+    
+    if (activos.isEmpty()) {
+        System.out.println("✓ No hay préstamos activos.\n");
+        return;
+    }
+    
+    System.out.printf("%-5s %-20s %-15s %-15s%n",
+        "ID", "Cliente", "Monto", "Saldo");
+    System.out.println(repetir("-", 60));
+    
+    double totalCartera = 0;
+    
+    for (Prestamo p : activos) {
+        System.out.printf("%-5d %-20s $%,14.0f $%,14.0f%n",
+            p.getId(),
+            truncar(p.getCliente().getNombre(), 20),
+            p.getMonto(),
+            p.getSaldoPendiente()
+        );
+        totalCartera += p.getSaldoPendiente();
+    }
+    
+    System.out.println("\n✓ Total préstamos activos: " + activos.size());
+    System.out.println("✓ Cartera activa: $" + String.format("%,.2f", totalCartera));
+    System.out.println();
+}
+
+/**
+ * Genera reporte de clientes morosos
+ */
+public void generarReporteClientesMorosos() {
+    System.out.println("\n╔═══════════════════════════════════════╗");
+    System.out.println("║     REPORTE DE CLIENTES MOROSOS      ║");
+    System.out.println("╚═══════════════════════════════════════╝\n");
+    
+    ArrayList<Cliente> morosos = obtenerClientesMorosos();
+    
+    if (morosos.isEmpty()) {
+        System.out.println("✓ No hay clientes morosos.\n");
+        return;
+    }
+    
+    System.out.printf("%-5s %-25s %-15s %-30s%n",
+        "ID", "Nombre", "Documento", "Correo");
+    System.out.println(repetir("-", 80));
+    
+    for (Cliente c : morosos) {
+        System.out.printf("%-5d %-25s %-15s %-30s%n",
+            c.getId(),
+            truncar(c.getNombre(), 25),
+            c.getDocumento(),
+            truncar(c.getCorreo(), 30)
+        );
+    }
+    
+    System.out.println("\n⚠️  Total clientes morosos: " + morosos.size());
+    System.out.println();
+}
+
+/**
+ * Genera reporte de total prestado por empleado
+ */
+public void generarReporteTotalPorEmpleado() {
+    System.out.println("\n╔═══════════════════════════════════════╗");
+    System.out.println("║   TOTAL PRESTADO POR EMPLEADO        ║");
+    System.out.println("╚═══════════════════════════════════════╝\n");
+    
+    Map<String, Double> totalPorEmpleado = obtenerTotalPrestadoPorEmpleado();
+    
+    if (totalPorEmpleado.isEmpty()) {
+        System.out.println("No hay datos de préstamos.\n");
+        return;
+    }
+    
+    System.out.printf("%-30s %-20s%n", "Empleado", "Total Prestado");
+    System.out.println(repetir("-", 55));
+    
+    totalPorEmpleado.forEach((nombre, total) -> 
+        System.out.printf("%-30s $%,18.0f%n", truncar(nombre, 30), total)
+    );
+    
+    System.out.println();
+}
+
+// ═══════════════════════════════════════════════════════════
+//          OPERACIONES CON LAMBDAS (ISSUE #27)
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Obtiene préstamos ordenados por monto (mayor a menor)
+ */
+public ArrayList<Prestamo> obtenerPrestamosOrdenadosPorMonto() {
+    return prestamoServicio.listarTodos().stream()
+        .sorted((p1, p2) -> Double.compare(p2.getMonto(), p1.getMonto()))
+        .collect(Collectors.toCollection(ArrayList::new));
+}
+
+/**
+ * Calcula el total de la cartera usando mapToDouble + sum
+ */
+public double calcularTotalCartera() {
+    return prestamoServicio.listarTodos().stream()
+        .mapToDouble(Prestamo::getSaldoPendiente)
+        .sum();
+}
+
+/**
+ * Obtiene estadísticas de préstamos usando Collectors
+ */
+public Map<String, Object> obtenerEstadisticasPrestamos() {
+    ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
+    
+    Map<String, Object> estadisticas = new HashMap<>();
+    
+    // Total de préstamos
+    estadisticas.put("total", prestamos.size());
+    
+    // Préstamos por estado
+    Map<String, Long> porEstado = prestamos.stream()
+        .collect(Collectors.groupingBy(Prestamo::getEstado, Collectors.counting()));
+    estadisticas.put("porEstado", porEstado);
+    
+    // Monto total prestado
+    double montoTotal = prestamos.stream()
+        .mapToDouble(Prestamo::getMonto)
+        .sum();
+    estadisticas.put("montoTotal", montoTotal);
+    
+    // Cartera total
+    double carteraTotal = prestamos.stream()
+        .mapToDouble(Prestamo::getSaldoPendiente)
+        .sum();
+    estadisticas.put("carteraTotal", carteraTotal);
+    
+    // Promedio de préstamos
+    double promedio = prestamos.stream()
+        .mapToDouble(Prestamo::getMonto)
+        .average()
+        .orElse(0.0);
+    estadisticas.put("promedioMonto", promedio);
+    
+    return estadisticas;
+}
+
+/**
+ * Genera reporte de préstamos ordenados por monto
+ */
+public void generarReportePrestamosOrdenados() {
+    System.out.println("\n╔═══════════════════════════════════════╗");
+    System.out.println("║  PRÉSTAMOS ORDENADOS POR MONTO       ║");
+    System.out.println("╚═══════════════════════════════════════╝\n");
+    
+    ArrayList<Prestamo> ordenados = obtenerPrestamosOrdenadosPorMonto();
+    
+    if (ordenados.isEmpty()) {
+        System.out.println("No hay préstamos registrados.\n");
+        return;
+    }
+    
+    System.out.printf("%-5s %-20s %-15s %-10s%n",
+        "ID", "Cliente", "Monto", "Estado");
+    System.out.println(repetir("-", 55));
+    
+    for (Prestamo p : ordenados) {
+        System.out.printf("%-5d %-20s $%,13.0f %-10s%n",
+            p.getId(),
+            truncar(p.getCliente().getNombre(), 20),
+            p.getMonto(),
+            p.getEstado()
+        );
+    }
+    
+    System.out.println("\nTotal: " + ordenados.size() + " préstamos\n");
+}
+
+/**
+ * Genera reporte de estadísticas generales
+ */
+public void generarReporteEstadisticas() {
+    System.out.println("\n╔═══════════════════════════════════════╗");
+    System.out.println("║     ESTADÍSTICAS DE PRÉSTAMOS        ║");
+    System.out.println("╚═══════════════════════════════════════╝\n");
+    
+    Map<String, Object> stats = obtenerEstadisticasPrestamos();
+    
+    System.out.println("📊 Total de préstamos: " + stats.get("total"));
+    System.out.println("💰 Monto total prestado: $" + String.format("%,.2f", stats.get("montoTotal")));
+    System.out.println("💵 Cartera total: $" + String.format("%,.2f", stats.get("carteraTotal")));
+    System.out.println("📈 Promedio por préstamo: $" + String.format("%,.2f", stats.get("promedioMonto")));
+    
+    System.out.println("\n📋 Préstamos por estado:");
+    @SuppressWarnings("unchecked")
+    Map<String, Long> porEstado = (Map<String, Long>) stats.get("porEstado");
+    porEstado.forEach((estado, cantidad) -> 
+        System.out.println("   • " + estado + ": " + cantidad)
+    );
+    
     System.out.println();
 }
 
