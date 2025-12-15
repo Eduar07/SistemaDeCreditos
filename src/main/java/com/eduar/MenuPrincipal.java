@@ -3,6 +3,7 @@ package com.eduar;
 import com.eduar.servicio.*;
 import com.eduar.modelo.*;
 import com.eduar.util.ConexionDb;
+import com.eduar.util.ColoresConsola;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public class MenuPrincipal {
         mostrarBanner();
         
         if (!ConexionDb.probarConexion()) {
-            System.err.println("\n❌ ERROR: No se pudo conectar a la base de datos");
+            System.err.println(ColoresConsola.error("No se pudo conectar a la base de datos"));
             System.err.println("Verifica que Docker esté corriendo: docker ps");
             System.err.println("Para iniciar: docker compose up -d");
             return;
@@ -49,16 +50,16 @@ public class MenuPrincipal {
         int opcion;
         
         do {
-            System.out.println("\n╔═══════════════════════════════════════╗");
+            System.out.println(ColoresConsola.CYAN_BOLD + "\n╔═══════════════════════════════════════╗");
             System.out.println("║         MENÚ PRINCIPAL               ║");
-            System.out.println("╠═══════════════════════════════════════╣");
+            System.out.println("╠═══════════════════════════════════════╣" + ColoresConsola.RESET);
             System.out.println("║  1. Gestión de Empleados             ║");
             System.out.println("║  2. Gestión de Clientes              ║");
             System.out.println("║  3. Gestión de Préstamos             ║");
             System.out.println("║  4. Gestión de Pagos                 ║");
             System.out.println("║  5. Reportes                         ║");
             System.out.println("║  0. Salir                            ║");
-            System.out.println("╚═══════════════════════════════════════╝");
+            System.out.println(ColoresConsola.CYAN_BOLD + "╚═══════════════════════════════════════╝" + ColoresConsola.RESET);
             System.out.print("Seleccione una opción: ");
             
             opcion = leerEntero();
@@ -80,11 +81,11 @@ public class MenuPrincipal {
                     menuReportes();
                     break;
                 case 0:
-                    System.out.println("\n✓ Gracias por usar CrediYa S.A.S.");
-                    System.out.println("✓ ¡Hasta pronto!\n");
+                    System.out.println(ColoresConsola.exito("Gracias por usar CrediYa S.A.S."));
+                    System.out.println(ColoresConsola.exito("¡Hasta pronto!\n"));
                     break;
                 default:
-                    System.out.println("\n✗ Opción inválida. Intente de nuevo.");
+                    System.out.println(ColoresConsola.error("Opción inválida. Intente de nuevo."));
             }
         } while (opcion != 0);
     }
@@ -98,9 +99,9 @@ public class MenuPrincipal {
         int opcion;
         
         do {
-            System.out.println("\n╔═══════════════════════════════════════╗");
+            System.out.println(ColoresConsola.AZUL_BOLD + "\n╔═══════════════════════════════════════╗");
             System.out.println("║      GESTIÓN DE EMPLEADOS            ║");
-            System.out.println("╠═══════════════════════════════════════╣");
+            System.out.println("╠═══════════════════════════════════════╣" + ColoresConsola.RESET);
             System.out.println("║  1. Registrar nuevo empleado         ║");
             System.out.println("║  2. Listar empleados                 ║");
             System.out.println("║  3. Buscar empleado por ID           ║");
@@ -110,7 +111,7 @@ public class MenuPrincipal {
             System.out.println("║  7. Eliminar empleado                ║");
             System.out.println("║  8. Ver nómina total                 ║");
             System.out.println("║  0. Volver al menú principal         ║");
-            System.out.println("╚═══════════════════════════════════════╝");
+            System.out.println(ColoresConsola.AZUL_BOLD + "╚═══════════════════════════════════════╝" + ColoresConsola.RESET);
             System.out.print("Seleccione una opción: ");
             
             opcion = leerEntero();
@@ -143,13 +144,13 @@ public class MenuPrincipal {
                 case 0:
                     break;
                 default:
-                    System.out.println("\n✗ Opción inválida.");
+                    System.out.println(ColoresConsola.error("Opción inválida."));
             }
         } while (opcion != 0);
     }
     
     private static void registrarEmpleado() {
-        System.out.println("\n--- Registrar Nuevo Empleado ---");
+        System.out.println(ColoresConsola.titulo("\n--- Registrar Nuevo Empleado ---"));
         
         System.out.print("Nombre completo: ");
         String nombre = scanner.nextLine();
@@ -170,20 +171,20 @@ public class MenuPrincipal {
         Empleado empleado = new Empleado(nombre, documento, correo, rol, salario);
         
         if (empleadoServicio.registrarEmpleado(empleado)) {
-            System.out.println("\n✓ Empleado registrado exitosamente");
+            System.out.println(ColoresConsola.exito("Empleado registrado exitosamente"));
             pausar();
         } else {
-            System.out.println("\n✗ No se pudo registrar el empleado.");
+            System.out.println(ColoresConsola.error("No se pudo registrar el empleado."));
             pausar();
         }
     }
     
     private static void listarEmpleados() {
-        System.out.println("\n--- Lista de Empleados ---");
+        System.out.println(ColoresConsola.titulo("\n--- Lista de Empleados ---"));
         ArrayList<Empleado> empleados = empleadoServicio.listarTodos();
         
         if (empleados.isEmpty()) {
-            System.out.println("No hay empleados registrados.");
+            System.out.println(ColoresConsola.advertencia("No hay empleados registrados."));
         } else {
             System.out.printf("\n%-5s %-25s %-15s %-15s %-12s%n", 
                 "ID", "Nombre", "Rol", "Documento", "Salario");
@@ -213,7 +214,7 @@ public class MenuPrincipal {
         if (empleado != null) {
             System.out.println("\n" + empleado);
         } else {
-            System.out.println("\n✗ Empleado no encontrado.");
+            System.out.println(ColoresConsola.error("Empleado no encontrado."));
         }
         pausar();
     }
@@ -227,7 +228,7 @@ public class MenuPrincipal {
         if (empleado != null) {
             System.out.println("\n" + empleado);
         } else {
-            System.out.println("\n✗ Empleado no encontrado.");
+            System.out.println(ColoresConsola.error("Empleado no encontrado."));
         }
         pausar();
     }
@@ -239,7 +240,7 @@ public class MenuPrincipal {
         ArrayList<Empleado> empleados = empleadoServicio.buscarPorRol(rol);
         
         if (empleados.isEmpty()) {
-            System.out.println("\n✗ No se encontraron empleados con ese rol.");
+            System.out.println(ColoresConsola.error("No se encontraron empleados con ese rol."));
         } else {
             System.out.println("\nEmpleados con rol '" + rol + "':");
             for (Empleado e : empleados) {
@@ -257,7 +258,7 @@ public class MenuPrincipal {
         Empleado empleado = empleadoServicio.buscarPorId(id);
         
         if (empleado == null) {
-            System.out.println("\n✗ Empleado no encontrado.");
+            System.out.println(ColoresConsola.error("Empleado no encontrado."));
             pausar();
             return;
         }
@@ -285,14 +286,14 @@ public class MenuPrincipal {
                 double salario = Double.parseDouble(salarioStr);
                 empleado.setSalario(salario);
             } catch (NumberFormatException e) {
-                System.out.println("✗ Salario inválido, se mantiene el anterior.");
+                System.out.println(ColoresConsola.advertencia("Salario inválido, se mantiene el anterior."));
             }
         }
         
         if (empleadoServicio.actualizarEmpleado(empleado)) {
-            System.out.println("\n✓ Empleado actualizado exitosamente.");
+            System.out.println(ColoresConsola.exito("Empleado actualizado exitosamente."));
         } else {
-            System.out.println("\n✗ No se pudo actualizar el empleado.");
+            System.out.println(ColoresConsola.error("No se pudo actualizar el empleado."));
         }
         pausar();
     }
@@ -305,7 +306,7 @@ public class MenuPrincipal {
         Empleado empleado = empleadoServicio.buscarPorId(id);
         
         if (empleado == null) {
-            System.out.println("\n✗ Empleado no encontrado.");
+            System.out.println(ColoresConsola.error("Empleado no encontrado."));
             pausar();
             return;
         }
@@ -321,25 +322,25 @@ public class MenuPrincipal {
         }
         
         if (tienePrestamos) {
-            System.out.println("\n✗ ERROR: No se puede eliminar este empleado");
-            System.out.println("✗ El empleado tiene préstamos asociados");
-            System.out.println("✗ Primero debe eliminar o reasignar los préstamos");
+            System.out.println(ColoresConsola.error("ERROR: No se puede eliminar este empleado"));
+            System.out.println(ColoresConsola.error("El empleado tiene préstamos asociados"));
+            System.out.println(ColoresConsola.error("Primero debe eliminar o reasignar los préstamos"));
             pausar();
             return;
         }
         
         System.out.println("\n" + empleado);
-        System.out.print("\n¿Está seguro de eliminar este empleado? (S/N): ");
+        System.out.print(ColoresConsola.advertencia("\n¿Está seguro de eliminar este empleado? (S/N): "));
         String confirmacion = scanner.nextLine();
         
         if (confirmacion.equalsIgnoreCase("S")) {
             if (empleadoServicio.eliminarEmpleado(id)) {
-                System.out.println("\n✓ Empleado eliminado exitosamente.");
+                System.out.println(ColoresConsola.exito("Empleado eliminado exitosamente."));
             } else {
-                System.out.println("\n✗ No se pudo eliminar el empleado.");
+                System.out.println(ColoresConsola.error("No se pudo eliminar el empleado."));
             }
         } else {
-            System.out.println("\n✗ Operación cancelada.");
+            System.out.println(ColoresConsola.info("Operación cancelada."));
         }
         pausar();
     }
@@ -348,7 +349,7 @@ public class MenuPrincipal {
         double nomina = empleadoServicio.calcularNominaTotal();
         int total = empleadoServicio.obtenerTotalEmpleados();
         
-        System.out.println("\n--- Nómina Total ---");
+        System.out.println(ColoresConsola.titulo("\n--- Nómina Total ---"));
         System.out.println("Total empleados: " + total);
         System.out.println("Nómina mensual: $" + String.format("%,.2f", nomina));
         System.out.println("Nómina anual: $" + String.format("%,.2f", nomina * 12));
@@ -364,9 +365,9 @@ public class MenuPrincipal {
         int opcion;
         
         do {
-            System.out.println("\n╔═══════════════════════════════════════╗");
+            System.out.println(ColoresConsola.VERDE_BOLD + "\n╔═══════════════════════════════════════╗");
             System.out.println("║       GESTIÓN DE CLIENTES            ║");
-            System.out.println("╠═══════════════════════════════════════╣");
+            System.out.println("╠═══════════════════════════════════════╣" + ColoresConsola.RESET);
             System.out.println("║  1. Registrar nuevo cliente          ║");
             System.out.println("║  2. Listar clientes                  ║");
             System.out.println("║  3. Buscar cliente por ID            ║");
@@ -374,7 +375,7 @@ public class MenuPrincipal {
             System.out.println("║  5. Actualizar cliente               ║");
             System.out.println("║  6. Eliminar cliente                 ║");
             System.out.println("║  0. Volver al menú principal         ║");
-            System.out.println("╚═══════════════════════════════════════╝");
+            System.out.println(ColoresConsola.VERDE_BOLD + "╚═══════════════════════════════════════╝" + ColoresConsola.RESET);
             System.out.print("Seleccione una opción: ");
             
             opcion = leerEntero();
@@ -401,13 +402,13 @@ public class MenuPrincipal {
                 case 0:
                     break;
                 default:
-                    System.out.println("\n✗ Opción inválida.");
+                    System.out.println(ColoresConsola.error("Opción inválida."));
             }
         } while (opcion != 0);
     }
     
     private static void registrarCliente() {
-        System.out.println("\n--- Registrar Nuevo Cliente ---");
+        System.out.println(ColoresConsola.titulo("\n--- Registrar Nuevo Cliente ---"));
         
         System.out.print("Nombre completo: ");
         String nombre = scanner.nextLine();
@@ -424,20 +425,20 @@ public class MenuPrincipal {
         Cliente cliente = new Cliente(nombre, documento, correo, telefono);
         
         if (clienteServicio.registrarCliente(cliente)) {
-            System.out.println("\n✓ Cliente registrado exitosamente");
+            System.out.println(ColoresConsola.exito("Cliente registrado exitosamente"));
             pausar();
         } else {
-            System.out.println("\n✗ No se pudo registrar el cliente.");
+            System.out.println(ColoresConsola.error("No se pudo registrar el cliente."));
             pausar();
         }
     }
     
     private static void listarClientes() {
-        System.out.println("\n--- Lista de Clientes ---");
+        System.out.println(ColoresConsola.titulo("\n--- Lista de Clientes ---"));
         ArrayList<Cliente> clientes = clienteServicio.listarTodos();
         
         if (clientes.isEmpty()) {
-            System.out.println("No hay clientes registrados.");
+            System.out.println(ColoresConsola.advertencia("No hay clientes registrados."));
         } else {
             System.out.printf("\n%-5s %-25s %-15s %-30s %-12s%n", 
                 "ID", "Nombre", "Documento", "Correo", "Teléfono");
@@ -467,7 +468,7 @@ public class MenuPrincipal {
         if (cliente != null) {
             System.out.println("\n" + cliente);
         } else {
-            System.out.println("\n✗ Cliente no encontrado.");
+            System.out.println(ColoresConsola.error("Cliente no encontrado."));
         }
         pausar();
     }
@@ -481,7 +482,7 @@ public class MenuPrincipal {
         if (cliente != null) {
             System.out.println("\n" + cliente);
         } else {
-            System.out.println("\n✗ Cliente no encontrado.");
+            System.out.println(ColoresConsola.error("Cliente no encontrado."));
         }
         pausar();
     }
@@ -494,7 +495,7 @@ public class MenuPrincipal {
         Cliente cliente = clienteServicio.buscarPorId(id);
         
         if (cliente == null) {
-            System.out.println("\n✗ Cliente no encontrado.");
+            System.out.println(ColoresConsola.error("Cliente no encontrado."));
             pausar();
             return;
         }
@@ -516,9 +517,9 @@ public class MenuPrincipal {
         }
         
         if (clienteServicio.actualizarCliente(cliente)) {
-            System.out.println("\n✓ Cliente actualizado exitosamente.");
+            System.out.println(ColoresConsola.exito("Cliente actualizado exitosamente."));
         } else {
-            System.out.println("\n✗ No se pudo actualizar el cliente.");
+            System.out.println(ColoresConsola.error("No se pudo actualizar el cliente."));
         }
         pausar();
     }
@@ -531,7 +532,7 @@ public class MenuPrincipal {
         Cliente cliente = clienteServicio.buscarPorId(id);
         
         if (cliente == null) {
-            System.out.println("\n✗ Cliente no encontrado.");
+            System.out.println(ColoresConsola.error("Cliente no encontrado."));
             pausar();
             return;
         }
@@ -539,25 +540,25 @@ public class MenuPrincipal {
         ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorCliente(id);
         
         if (!prestamos.isEmpty()) {
-            System.out.println("\n✗ ERROR: No se puede eliminar este cliente");
-            System.out.println("✗ El cliente tiene " + prestamos.size() + " préstamo(s) asociado(s)");
-            System.out.println("✗ Primero debe eliminar o completar los préstamos");
+            System.out.println(ColoresConsola.error("ERROR: No se puede eliminar este cliente"));
+            System.out.println(ColoresConsola.error("El cliente tiene " + prestamos.size() + " préstamo(s) asociado(s)"));
+            System.out.println(ColoresConsola.error("Primero debe eliminar o completar los préstamos"));
             pausar();
             return;
         }
         
         System.out.println("\n" + cliente);
-        System.out.print("\n¿Está seguro de eliminar este cliente? (S/N): ");
+        System.out.print(ColoresConsola.advertencia("\n¿Está seguro de eliminar este cliente? (S/N): "));
         String confirmacion = scanner.nextLine();
         
         if (confirmacion.equalsIgnoreCase("S")) {
             if (clienteServicio.eliminarCliente(id)) {
-                System.out.println("\n✓ Cliente eliminado exitosamente.");
+                System.out.println(ColoresConsola.exito("Cliente eliminado exitosamente."));
             } else {
-                System.out.println("\n✗ No se pudo eliminar el cliente.");
+                System.out.println(ColoresConsola.error("No se pudo eliminar el cliente."));
             }
         } else {
-            System.out.println("\n✗ Operación cancelada.");
+            System.out.println(ColoresConsola.info("Operación cancelada."));
         }
         pausar();
     }
@@ -571,9 +572,9 @@ public class MenuPrincipal {
         int opcion;
         
         do {
-            System.out.println("\n╔═══════════════════════════════════════╗");
+            System.out.println(ColoresConsola.MORADO_BOLD + "\n╔═══════════════════════════════════════╗");
             System.out.println("║      GESTIÓN DE PRÉSTAMOS            ║");
-            System.out.println("╠═══════════════════════════════════════╣");
+            System.out.println("╠═══════════════════════════════════════╣" + ColoresConsola.RESET);
             System.out.println("║  1. Crear nuevo préstamo             ║");
             System.out.println("║  2. Listar préstamos                 ║");
             System.out.println("║  3. Buscar préstamo por ID           ║");
@@ -582,7 +583,7 @@ public class MenuPrincipal {
             System.out.println("║  6. Cambiar estado de préstamo       ║");
             System.out.println("║  7. Ver préstamos vencidos           ║");
             System.out.println("║  0. Volver al menú principal         ║");
-            System.out.println("╚═══════════════════════════════════════╝");
+            System.out.println(ColoresConsola.MORADO_BOLD + "╚═══════════════════════════════════════╝" + ColoresConsola.RESET);
             System.out.print("Seleccione una opción: ");
             
             opcion = leerEntero();
@@ -612,13 +613,13 @@ public class MenuPrincipal {
                 case 0:
                     break;
                 default:
-                    System.out.println("\n✗ Opción inválida.");
+                    System.out.println(ColoresConsola.error("Opción inválida."));
             }
         } while (opcion != 0);
     }
     
     private static void crearPrestamo() {
-        System.out.println("\n--- Crear Nuevo Préstamo ---");
+        System.out.println(ColoresConsola.titulo("\n--- Crear Nuevo Préstamo ---"));
         
         System.out.print("ID del cliente: ");
         int clienteId = leerEntero();
@@ -626,7 +627,7 @@ public class MenuPrincipal {
         
         Cliente cliente = clienteServicio.buscarPorId(clienteId);
         if (cliente == null) {
-            System.out.println("\n✗ Cliente no encontrado.");
+            System.out.println(ColoresConsola.error("Cliente no encontrado."));
             pausar();
             return;
         }
@@ -634,7 +635,7 @@ public class MenuPrincipal {
         System.out.println("Cliente: " + cliente.getNombre());
         
         if (prestamoServicio.tienePrestamoPendiente(clienteId)) {
-            System.out.println("\n✗ El cliente ya tiene un préstamo pendiente.");
+            System.out.println(ColoresConsola.error("El cliente ya tiene un préstamo pendiente."));
             pausar();
             return;
         }
@@ -645,7 +646,7 @@ public class MenuPrincipal {
         
         Empleado empleado = empleadoServicio.buscarPorId(empleadoId);
         if (empleado == null) {
-            System.out.println("\n✗ Empleado no encontrado.");
+            System.out.println(ColoresConsola.error("Empleado no encontrado."));
             pausar();
             return;
         }
@@ -667,35 +668,36 @@ public class MenuPrincipal {
         if (prestamoServicio.crearPrestamo(clienteId, empleadoId, monto, interes, cuotas, LocalDate.now())) {
             pausar();
         } else {
-            System.out.println("\n✗ No se pudo crear el préstamo.");
+            System.out.println(ColoresConsola.error("No se pudo crear el préstamo."));
             pausar();
         }
     }
-    private static void listarPrestamos() {
-    System.out.println("\n--- Lista de Préstamos ---");
-    ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
     
-    if (prestamos.isEmpty()) {
-        System.out.println("No hay préstamos registrados.");
-    } else {
-        System.out.printf("\n%-5s %-20s %-15s %-8s %-10s %-15s%n",
-            "ID", "Cliente", "Monto", "Cuotas", "Estado", "Saldo");
-        System.out.println(repetir("-", 85));
+    private static void listarPrestamos() {
+        System.out.println(ColoresConsola.titulo("\n--- Lista de Préstamos ---"));
+        ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
         
-        for (Prestamo p : prestamos) {
-            System.out.printf("%-5d %-20s $%,14.0f %-8d %-10s $%,14.0f%n",
-                p.getId(),
-                truncar(p.getCliente().getNombre(), 20),
-                p.getMonto(),
-                p.getCuotas(),
-                p.getEstado(),
-                p.getSaldoPendiente()
-            );
+        if (prestamos.isEmpty()) {
+            System.out.println(ColoresConsola.advertencia("No hay préstamos registrados."));
+        } else {
+            System.out.printf("\n%-5s %-20s %-15s %-8s %-10s %-15s%n",
+                "ID", "Cliente", "Monto", "Cuotas", "Estado", "Saldo");
+            System.out.println(repetir("-", 85));
+            
+            for (Prestamo p : prestamos) {
+                System.out.printf("%-5d %-20s $%,14.0f %-8d %-10s $%,14.0f%n",
+                    p.getId(),
+                    truncar(p.getCliente().getNombre(), 20),
+                    p.getMonto(),
+                    p.getCuotas(),
+                    p.getEstado(),
+                    p.getSaldoPendiente()
+                );
+            }
+            System.out.println("\nTotal: " + prestamos.size() + " préstamos");
         }
-        System.out.println("\nTotal: " + prestamos.size() + " préstamos");
+        pausar();
     }
-    pausar();
-}
     
     private static void buscarPrestamoPorId() {
         System.out.print("\nIngrese ID del préstamo: ");
@@ -707,7 +709,7 @@ public class MenuPrincipal {
         if (prestamo != null) {
             System.out.println("\n" + prestamo);
         } else {
-            System.out.println("\n✗ Préstamo no encontrado.");
+            System.out.println(ColoresConsola.error("Préstamo no encontrado."));
         }
         pausar();
     }
@@ -720,7 +722,7 @@ public class MenuPrincipal {
         ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorCliente(clienteId);
         
         if (prestamos.isEmpty()) {
-            System.out.println("\n✗ No se encontraron préstamos para este cliente.");
+            System.out.println(ColoresConsola.error("No se encontraron préstamos para este cliente."));
         } else {
             System.out.println("\nPréstamos del cliente:");
             for (Prestamo p : prestamos) {
@@ -730,55 +732,54 @@ public class MenuPrincipal {
         pausar();
     }
     
-    private static void buscarPrestamosPorEstado() {
-        System.out.print("\nIngrese estado (pendiente/pagado/vencido): ");
-        String estado = scanner.nextLine();
-        
-        ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorEstado(estado);
-        
-        if (prestamos.isEmpty()) {
-            System.out.println("\n✗ No se encontraron préstamos con ese estado.");
-        } else {
-            System.out.println("\nPréstamos con estado '" + estado + "': " + prestamos.size());
-            for (Prestamo p : prestamos) {
-                System.out.println("  • Préstamo #" + p.getId() + " - Cliente: " + p.getCliente().getNombre());
-            }
+    private static void buscarPrestamosPorEstado() {System.out.print("\nIngrese estado (pendiente/pagado/vencido): ");
+    String estado = scanner.nextLine();
+    
+    ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorEstado(estado);
+    
+    if (prestamos.isEmpty()) {
+        System.out.println(ColoresConsola.error("No se encontraron préstamos con ese estado."));
+    } else {
+        System.out.println("\nPréstamos con estado '" + estado + "': " + prestamos.size());
+        for (Prestamo p : prestamos) {
+            System.out.println("  • Préstamo #" + p.getId() + " - Cliente: " + p.getCliente().getNombre());
         }
+    }
+    pausar();
+}
+
+private static void cambiarEstadoPrestamo() {
+    System.out.print("\nIngrese ID del préstamo: ");
+    int id = leerEntero();
+    scanner.nextLine();
+    
+    Prestamo prestamo = prestamoServicio.buscarPorId(id);
+    
+    if (prestamo == null) {
+        System.out.println(ColoresConsola.error("Préstamo no encontrado."));
         pausar();
+        return;
     }
     
-    private static void cambiarEstadoPrestamo() {
-        System.out.print("\nIngrese ID del préstamo: ");
-        int id = leerEntero();
-        scanner.nextLine();
-        
-        Prestamo prestamo = prestamoServicio.buscarPorId(id);
-        
-        if (prestamo == null) {
-            System.out.println("\n✗ Préstamo no encontrado.");
-            pausar();
-            return;
-        }
-        
-        System.out.println("\nEstado actual: " + prestamo.getEstado());
-        System.out.print("Nuevo estado (pendiente/pagado/vencido): ");
-        String nuevoEstado = scanner.nextLine();
-        
-        if (prestamoServicio.actualizarEstado(id, nuevoEstado)) {
-            pausar();
-        } else {
-            pausar();
-            }
+    System.out.println("\nEstado actual: " + prestamo.getEstado());
+    System.out.print("Nuevo estado (pendiente/pagado/vencido): ");
+    String nuevoEstado = scanner.nextLine();
+    
+    if (prestamoServicio.actualizarEstado(id, nuevoEstado)) {
+        pausar();
+    } else {
+        pausar();
+    }
 }
 
 private static void verPrestamosVencidos() {
-    System.out.println("\n--- Préstamos Vencidos ---");
+    System.out.println(ColoresConsola.advertencia("\n--- Préstamos Vencidos ---"));
     ArrayList<Prestamo> vencidos = prestamoServicio.obtenerPrestamosVencidos();
     
     if (vencidos.isEmpty()) {
-        System.out.println("✓ No hay préstamos vencidos.");
+        System.out.println(ColoresConsola.exito("No hay préstamos vencidos."));
     } else {
-        System.out.println("⚠️  Total préstamos vencidos: " + vencidos.size());
+        System.out.println(ColoresConsola.advertencia("⚠️  Total préstamos vencidos: " + vencidos.size()));
         System.out.println();
         
         for (Prestamo p : vencidos) {
@@ -798,16 +799,16 @@ private static void menuPagos() {
     int opcion;
     
     do {
-        System.out.println("\n╔═══════════════════════════════════════╗");
+        System.out.println(ColoresConsola.AMARILLO_BOLD + "\n╔═══════════════════════════════════════╗");
         System.out.println("║        GESTIÓN DE PAGOS              ║");
-        System.out.println("╠═══════════════════════════════════════╣");
+        System.out.println("╠═══════════════════════════════════════╣" + ColoresConsola.RESET);
         System.out.println("║  1. Registrar pago                   ║");
         System.out.println("║  2. Listar pagos                     ║");
         System.out.println("║  3. Buscar pago por ID               ║");
         System.out.println("║  4. Buscar pagos por préstamo        ║");
         System.out.println("║  5. Ver total recaudado              ║");
         System.out.println("║  0. Volver al menú principal         ║");
-        System.out.println("╚═══════════════════════════════════════╝");
+        System.out.println(ColoresConsola.AMARILLO_BOLD + "╚═══════════════════════════════════════╝" + ColoresConsola.RESET);
         System.out.print("Seleccione una opción: ");
         
         opcion = leerEntero();
@@ -831,13 +832,13 @@ private static void menuPagos() {
             case 0:
                 break;
             default:
-                System.out.println("\n✗ Opción inválida.");
+                System.out.println(ColoresConsola.error("Opción inválida."));
         }
     } while (opcion != 0);
 }
 
 private static void registrarPago() {
-    System.out.println("\n--- Registrar Pago ---");
+    System.out.println(ColoresConsola.titulo("\n--- Registrar Pago ---"));
     
     System.out.print("ID del préstamo: ");
     int prestamoId = leerEntero();
@@ -846,7 +847,7 @@ private static void registrarPago() {
     Prestamo prestamo = prestamoServicio.buscarPorId(prestamoId);
     
     if (prestamo == null) {
-        System.out.println("\n✗ Préstamo no encontrado.");
+        System.out.println(ColoresConsola.error("Préstamo no encontrado."));
         pausar();
         return;
     }
@@ -869,12 +870,13 @@ private static void registrarPago() {
         pausar();
     }
 }
+
 private static void listarPagos() {
-    System.out.println("\n--- Lista de Pagos ---");
+    System.out.println(ColoresConsola.titulo("\n--- Lista de Pagos ---"));
     ArrayList<Pago> pagos = pagoServicio.listarTodos();
     
     if (pagos.isEmpty()) {
-        System.out.println("No hay pagos registrados.");
+        System.out.println(ColoresConsola.advertencia("No hay pagos registrados."));
     } else {
         System.out.printf("\n%-5s %-12s %-15s %-30s%n",
             "ID", "Préstamo", "Monto", "Observaciones");
@@ -903,7 +905,7 @@ private static void buscarPagoPorId() {
     if (pago != null) {
         System.out.println("\n" + pago);
     } else {
-        System.out.println("\n✗ Pago no encontrado.");
+        System.out.println(ColoresConsola.error("Pago no encontrado."));
     }
     pausar();
 }
@@ -916,7 +918,7 @@ private static void buscarPagosPorPrestamo() {
     ArrayList<Pago> pagos = pagoServicio.buscarPorPrestamo(prestamoId);
     
     if (pagos.isEmpty()) {
-        System.out.println("\n✗ No se encontraron pagos para este préstamo.");
+        System.out.println(ColoresConsola.error("No se encontraron pagos para este préstamo."));
     } else {
         System.out.println("\nPagos del préstamo #" + prestamoId + ":");
         double total = 0;
@@ -936,7 +938,7 @@ private static void verTotalRecaudado() {
     double total = pagoServicio.calcularTotalRecaudado();
     int totalPagos = pagoServicio.obtenerTotalPagos();
     
-    System.out.println("\n--- Total Recaudado ---");
+    System.out.println(ColoresConsola.titulo("\n--- Total Recaudado ---"));
     System.out.println("Total de pagos: " + totalPagos);
     System.out.println("Total recaudado: $" + String.format("%,.2f", total));
     pausar();
@@ -951,16 +953,21 @@ private static void menuReportes() {
     int opcion;
     
     do {
-        System.out.println("\n╔═══════════════════════════════════════╗");
+        System.out.println(ColoresConsola.CYAN_BOLD + "\n╔═══════════════════════════════════════╗");
         System.out.println("║            REPORTES                  ║");
-        System.out.println("╠═══════════════════════════════════════╣");
+        System.out.println("╠═══════════════════════════════════════╣" + ColoresConsola.RESET);
         System.out.println("║  1. Reporte general del sistema      ║");
         System.out.println("║  2. Reporte de clientes              ║");
         System.out.println("║  3. Reporte de préstamos             ║");
         System.out.println("║  4. Reporte por cliente              ║");
         System.out.println("║  5. Reporte de préstamos vencidos    ║");
+        System.out.println("║  6. Préstamos activos (Streams)      ║");
+        System.out.println("║  7. Clientes morosos (Streams)       ║");
+        System.out.println("║  8. Total por empleado (groupBy)     ║");
+        System.out.println("║  9. Préstamos ordenados (sorted)     ║");
+        System.out.println("║  10. Estadísticas (Collectors)       ║");
         System.out.println("║  0. Volver al menú principal         ║");
-        System.out.println("╚═══════════════════════════════════════╝");
+        System.out.println(ColoresConsola.CYAN_BOLD + "╚═══════════════════════════════════════╝" + ColoresConsola.RESET);
         System.out.print("Seleccione una opción: ");
         
         opcion = leerEntero();
@@ -989,10 +996,30 @@ private static void menuReportes() {
                 reporteServicio.generarReportePrestamosVencidos();
                 pausar();
                 break;
+            case 6:
+                reporteServicio.generarReportePrestamosActivos();
+                pausar();
+                break;
+            case 7:
+                reporteServicio.generarReporteClientesMorosos();
+                pausar();
+                break;
+            case 8:
+                reporteServicio.generarReporteTotalPorEmpleado();
+                pausar();
+                break;
+            case 9:
+                reporteServicio.generarReportePrestamosOrdenados();
+                pausar();
+                break;
+            case 10:
+                reporteServicio.generarReporteEstadisticas();
+                pausar();
+                break;
             case 0:
                 break;
             default:
-                System.out.println("\n✗ Opción inválida.");
+                System.out.println(ColoresConsola.error("Opción inválida."));
         }
     } while (opcion != 0);
 }
@@ -1003,7 +1030,7 @@ private static void menuReportes() {
 // ═══════════════════════════════════════════════════════════
 
 private static void mostrarBanner() {
-    System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
+    System.out.println(ColoresConsola.VERDE_BOLD + "\n╔═══════════════════════════════════════════════════════════╗");
     System.out.println("║                                                           ║");
     System.out.println("║             🏦  CREDIYA S.A.S.  🏦                        ║");
     System.out.println("║                                                           ║");
@@ -1011,7 +1038,7 @@ private static void mostrarBanner() {
     System.out.println("║                                                           ║");
     System.out.println("║              Versión 1.0 - Diciembre 2025                 ║");
     System.out.println("║                                                           ║");
-    System.out.println("╚═══════════════════════════════════════════════════════════╝");
+    System.out.println("╚═══════════════════════════════════════════════════════════╝" + ColoresConsola.RESET);
 }
 
 private static int leerEntero() {
@@ -1019,7 +1046,7 @@ private static int leerEntero() {
         try {
             return Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            System.out.print("✗ Entrada inválida. Ingrese un número: ");
+            System.out.print(ColoresConsola.error("Entrada inválida. Ingrese un número: "));
         }
     }
 }
@@ -1029,7 +1056,7 @@ private static double leerDouble() {
         try {
             return Double.parseDouble(scanner.nextLine());
         } catch (NumberFormatException e) {
-            System.out.print("✗ Entrada inválida. Ingrese un número: ");
+            System.out.print(ColoresConsola.error("Entrada inválida. Ingrese un número: "));
         }
     }
 }
