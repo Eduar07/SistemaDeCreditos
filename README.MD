@@ -429,7 +429,7 @@ Map<String, Double> totalPorEmpleado = prestamos.stream()
 ## 📚 Documentación Adicional
 
 - **[Manual de Usuario](docs/Manual.md)** - Guía paso a paso para usuarios finales
-- **[Diagrama UML](docs/UML.png)** - Diagrama de clases completo
+- **[Diagrama UML](docs/diagrama_clases.png)** - Diagrama de clases completo
 - **JavaDoc** - Documentación del código en `target/site/apidocs/`
 
 ### Generar JavaDoc
@@ -448,7 +448,7 @@ El JavaDoc estará disponible en: `proyecto/target/site/apidocs/index.html`
 - 🐙 GitHub: https://github.com/Eduar07
 
 
-**Institución:** [Tu Universidad/Instituto]  
+**Institución:** [Campusland]  
 **Fecha:** Diciembre 2025  
 **Versión:** 1.0
 

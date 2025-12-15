@@ -1,0 +1,112 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+title CREDIYA S.A.S. - Arquitectura por Capas (DAO / Service)
+
+package "Modelo (Domain)" {
+    class Cliente {
+        - id : int
+        - nombre : String
+        - documento : String
+        - correo : String
+        - telefono : String
+        - fechaRegistro : LocalDateTime
+        - activo : boolean
+    }
+
+    class Empleado {
+        - id : int
+        - nombre : String
+        - documento : String
+        - correo : String
+        - rol : String
+        - salario : double
+        - fechaIngreso : LocalDateTime
+        - activo : boolean
+    }
+
+    class Prestamo {
+        - id : int
+        - monto : double
+        - interes : double
+        - cuotas : int
+        - fechaInicio : LocalDate
+        - estado : String
+        - saldoPendiente : double
+        - fechaCreacion : LocalDateTime
+    }
+
+    class Pago {
+        - id : int
+        - fechaPago : LocalDate
+        - monto : double
+        - observaciones : String
+        - fechaCreacion : LocalDateTime
+    }
+}
+
+package "DAO (Persistencia)" {
+    interface ClienteDAO {
+        + guardar(cliente : Cliente)
+        + buscarPorDocumento(documento : String) : Cliente
+        + listar() : List<Cliente>
+    }
+
+    interface EmpleadoDAO {
+        + guardar(empleado : Empleado)
+        + buscarPorDocumento(documento : String) : Empleado
+        + listar() : List<Empleado>
+    }
+
+    interface PrestamoDAO {
+        + guardar(prestamo : Prestamo)
+        + buscarPorId(id : int) : Prestamo
+        + actualizarEstado(id : int, estado : String)
+        + listarPorCliente(clienteId : int) : List<Prestamo>
+    }
+
+    interface PagoDAO {
+        + registrar(pago : Pago)
+        + listarPorPrestamo(prestamoId : int) : List<Pago>
+    }
+}
+
+package "Service (Lógica de Negocio)" {
+    class ClienteServicio {
+        + registrarCliente()
+        + consultarCliente()
+        + listarClientesConPrestamos()
+    }
+
+    class EmpleadoServicio {
+        + registrarEmpleado()
+        + listarEmpleados()
+    }
+
+    class PrestamoServicio {
+        + crearPrestamo()
+        + cambiarEstado()
+        + calcularMontoTotal()
+    }
+
+    class PagoServicio {
+        + registrarPago()
+        + consultarHistorico()
+    }
+}
+
+Cliente "1" <-- "0..*" Prestamo : cliente
+Empleado "1" <-- "0..*" Prestamo : empleado
+Prestamo "1" <-- "0..*" Pago : pagos
+
+ClienteServicio --> ClienteDAO
+EmpleadoServicio --> EmpleadoDAO
+PrestamoServicio --> PrestamoDAO
+PagoServicio --> PagoDAO
+
+ClienteDAO --> Cliente
+EmpleadoDAO --> Empleado
+PrestamoDAO --> Prestamo
+PagoDAO --> Pago
+@enduml

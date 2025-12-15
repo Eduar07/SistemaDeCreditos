@@ -7,15 +7,15 @@ Versión 1.0 | Diciembre 2025
 
 ## 📑 Índice
 
-1. [Introducción](#introducción)
-2. [Inicio Rápido](#inicio-rápido)
-3. [Gestión de Empleados](#gestión-de-empleados)
-4. [Gestión de Clientes](#gestión-de-clientes)
-5. [Gestión de Préstamos](#gestión-de-préstamos)
-6. [Gestión de Pagos](#gestión-de-pagos)
-7. [Reportes](#reportes)
-8. [Solución de Problemas](#solución-de-problemas)
-9. [Preguntas Frecuentes](#preguntas-frecuentes)
+1. [Introducción](#-introducción)
+2. [Inicio Rápido](#-inicio-rápido)
+3. [Gestión de Empleados](#-gestión-de-empleados)
+4. [Gestión de Clientes](#-gestión-de-clientes)
+5. [Gestión de Préstamos](#-gestión-de-préstamos)
+6. [Gestión de Pagos](#-gestión-de-pagos)
+7. [Reportes](#-reportes)
+8. [Solución de Problemas](#-solución-de-problemas)
+9. [Preguntas Frecuentes](#-preguntas-frecuentes)
 
 ---
 
@@ -749,9 +749,9 @@ docker exec crediya_mysql mysqldump -u root -pcrediya123 crediya_db > backup.sql
 
 **¿Necesitas ayuda adicional?**
 
-📧 Email: [tu-email@ejemplo.com](mailto:tu-email@ejemplo.com)  
-🐙 GitHub Issues: [Reportar un problema](https://github.com/TU_USUARIO/SistemaDeCreditos/issues)  
-📚 Documentación: [README.md](../README.md)
+📧 Email: [edhuarguerrero@gmail.com]
+🐙 GitHub Issues: [https://github.com/Eduar07/SistemaDeCreditos.git]  
+📚 Documentación: [README.md](/proyecto/README.MD)
 
 ---
 
