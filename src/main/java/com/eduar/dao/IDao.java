@@ -2,13 +2,11 @@ package com.eduar.dao;
 
 import java.util.ArrayList;
 
-/**
- * Interfaz genérica DAO
- * Define operaciones básicas de acceso a datos
- */
 public interface IDao<T> {
-
-    void guardar(T obj);
-
+    void guardar(T objeto);
+    T buscarPorId(int id);  // ← ESTE MÉTODO DEBE ESTAR
     ArrayList<T> listar();
+    boolean actualizar(T objeto);
+    boolean eliminar(int id);
+    int contar();
 }

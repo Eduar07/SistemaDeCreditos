@@ -110,31 +110,41 @@ public class EmpleadoDAOImpl implements IDao<Empleado> {
     //                    READ (BUSCAR POR ID)
     // ═══════════════════════════════════════════════════════════
     
-    public Empleado buscarPorId(int id) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        Empleado empleado = null;
+@Override
+public Empleado buscarPorId(int id) {
+    // SIN WHERE activo = 1 para que encuentre TODOS
+    String sql = "SELECT * FROM empleados WHERE id = ?";
+    
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
+    try {
+        conn = ConexionDb.getConexion();
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, id);
+        rs = pstmt.executeQuery();
         
-        try {
-            conn = ConexionDb.getConexion();
-            stmt = conn.prepareStatement(SELECT_BY_ID);
-            stmt.setInt(1, id);
-            rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                empleado = mapearResultSet(rs);
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error al buscar empleado por ID: " + e.getMessage());
-        } finally {
-            cerrarRecursos(conn, stmt, rs);
+        if (rs.next()) {
+            Empleado empleado = new Empleado(
+                rs.getString("nombre"),
+                rs.getString("documento"),
+                rs.getString("correo"),
+                rs.getString("rol"),
+                rs.getDouble("salario")
+            );
+            empleado.setId(rs.getInt("id"));
+            return empleado;
         }
         
-        return empleado;
+    } catch (SQLException e) {
+        System.err.println("Error al buscar empleado: " + e.getMessage());
+    } finally {
+        cerrarRecursos(conn, pstmt, rs);
     }
     
+    return null;
+}
     
     // ═══════════════════════════════════════════════════════════
     //                    READ (BUSCAR POR DOCUMENTO)
@@ -201,6 +211,7 @@ public class EmpleadoDAOImpl implements IDao<Empleado> {
     //                    UPDATE (ACTUALIZAR)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public boolean actualizar(Empleado empleado) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -238,6 +249,7 @@ public class EmpleadoDAOImpl implements IDao<Empleado> {
     //                    DELETE (ELIMINAR LÓGICO)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public boolean eliminar(int id) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -269,6 +281,7 @@ public class EmpleadoDAOImpl implements IDao<Empleado> {
     //                    CONTAR
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public int contar() {
         Connection conn = null;
         PreparedStatement stmt = null;

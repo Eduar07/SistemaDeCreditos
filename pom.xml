@@ -1,39 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="
+           http://maven.apache.org/POM/4.0.0
+           http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- ========================= -->
+    <!-- INFORMACIÓN DEL PROYECTO -->
+    <!-- ========================= -->
     <groupId>com.eduar</groupId>
     <artifactId>proyecto</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Sistema de Créditos - CrediYa</name>
+    <description>Sistema de gestión de préstamos con JDBC, MySQL y Docker</description>
 
+    <!-- ========================= -->
+    <!-- PROPIEDADES -->
+    <!-- ========================= -->
     <properties>
+        <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- ========================= -->
+    <!-- DEPENDENCIAS -->
+    <!-- ========================= -->
     <dependencies>
-    
+
+        <!-- MySQL JDBC Driver -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>
         </dependency>
+
     </dependencies>
 
+    <!-- ========================= -->
+    <!-- BUILD & PLUGINS -->
+    <!-- ========================= -->
     <build>
         <plugins>
+
+            <!-- COMPILADOR JAVA -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- EJECUCIÓN DE CLASES MAIN -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
+
+                <!-- MAIN POR DEFECTO -->
                 <configuration>
-                    <mainClass>com.eduar.Main</mainClass>
+                    <mainClass>com.eduar.MenuPrincipal</mainClass>
                 </configuration>
+
+                <!-- EJECUCIONES ADICIONALES -->
+                <executions>
+
+                    <!-- Menú Principal -->
+                    <execution>
+                        <id>menu</id>
+                        <configuration>
+                            <mainClass>com.eduar.MenuPrincipal</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <!-- Pruebas de Integración -->
+                    <execution>
+                        <id>test-integracion</id>
+                        <configuration>
+                            <mainClass>com.eduar.TestIntegracion</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <!-- Pruebas del Validador -->
+                    <execution>
+                        <id>validador</id>
+                        <configuration>
+                            <mainClass>com.eduar.TestValidador</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <!-- Demo antigua (Main) -->
+                    <execution>
+                        <id>demo-main</id>
+                        <configuration>
+                            <mainClass>com.eduar.Main</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <!-- Prueba de conexión JDBC -->
+                    <execution>
+                        <id>conexion-db</id>
+                        <configuration>
+                            <mainClass>com.eduar.util.ConexionDb</mainClass>
+                        </configuration>
+                    </execution>
+
+                </executions>
             </plugin>
+
         </plugins>
     </build>
+
 </project>

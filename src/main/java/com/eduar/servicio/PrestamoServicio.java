@@ -263,18 +263,19 @@ public class PrestamoServicio {
         return total;
     }
     
-    public ArrayList<Prestamo> obtenerPrestamosVencidos() {
-        ArrayList<Prestamo> todos = prestamoDAO.listar();
-        ArrayList<Prestamo> vencidos = new ArrayList<>();
-        
-        for (Prestamo p : todos) {
-            if (p.estaVencido()) {
-                vencidos.add(p);
-            }
+  public ArrayList<Prestamo> obtenerPrestamosVencidos() {
+    ArrayList<Prestamo> todos = prestamoDAO.listar();
+    ArrayList<Prestamo> vencidos = new ArrayList<>();
+    
+    for (Prestamo p : todos) {
+        // Buscar por estado "vencido" O por el método estaVencido()
+        if (p.getEstado().equalsIgnoreCase("vencido") || p.estaVencido()) {
+            vencidos.add(p);
         }
-        
-        return vencidos;
     }
+    
+    return vencidos;
+}
     
     public boolean tienePrestamoPendiente(int clienteId) {
         ArrayList<Prestamo> prestamos = prestamoDAO.buscarPorCliente(clienteId);

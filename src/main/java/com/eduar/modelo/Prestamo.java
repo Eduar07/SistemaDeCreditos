@@ -275,9 +275,15 @@ public class Prestamo {
      * Verifica si el préstamo está vencido
      */
     public boolean estaVencido() {
-        if (estado.equals("pagado")) {
-            return false;
-        }
+    // Si ya está marcado como vencido en BD
+    if (estado.equalsIgnoreCase("vencido")) {
+        return true;
+    }
+    
+    // Si ya está pagado, no puede estar vencido
+    if (estado.equalsIgnoreCase("pagado")) {
+        return false;
+    }
         
         LocalDate fechaVencimiento = fechaInicio.plusMonths(cuotas);
         return LocalDate.now().isAfter(fechaVencimiento);
