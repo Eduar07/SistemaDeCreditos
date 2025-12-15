@@ -416,7 +416,7 @@ Map<String, Double> totalPorEmpleado = prestamos.stream()
 ## 📸 Capturas de Pantalla
 
 ### Menú Principal
-![Menu Principal](docs/UML.png)
+![Menu Principal](docs/MenuPrincipal.png)
 
 ### Registro de Préstamo
 ![Crear Prestamo](docs/crear_prestamo.png)
