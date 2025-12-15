@@ -1,5 +1,7 @@
 package com.eduar.dao;
 
+
+import com.eduar.util.ArchivoUtil;
 import com.eduar.modelo.Prestamo;
 import com.eduar.modelo.Cliente;
 import com.eduar.modelo.Empleado;
@@ -17,37 +19,49 @@ public class PrestamoDAOImpl implements IDao<Prestamo> {
         this.empleadoDAO = new EmpleadoDAOImpl();
     }
     
-    
     @Override
-    public void guardar(Prestamo prestamo) {
-        String sql = "INSERT INTO prestamos (cliente_id, empleado_id, monto, interes, cuotas, " +
-                     "fecha_inicio, estado, saldo_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
-        try (Connection conn = ConexionDb.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
-            pstmt.setInt(1, prestamo.getCliente().getId());
-            pstmt.setInt(2, prestamo.getEmpleado().getId());
-            pstmt.setDouble(3, prestamo.getMonto());
-            pstmt.setDouble(4, prestamo.getInteres());
-            pstmt.setInt(5, prestamo.getCuotas());
-            pstmt.setDate(6, Date.valueOf(prestamo.getFechaInicio()));
-            pstmt.setString(7, prestamo.getEstado());
-            pstmt.setDouble(8, prestamo.getSaldoPendiente());
-            
-            pstmt.executeUpdate();
-            
-            try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    prestamo.setId(rs.getInt(1));
-                }
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error al guardar préstamo: " + e.getMessage());
-        }
-    }
+public void guardar(Prestamo prestamo) {
+    String sql = "INSERT INTO prestamos (cliente_id, empleado_id, monto, interes, cuotas, " +
+                 "fecha_inicio, estado, saldo_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
+    try (Connection conn = ConexionDb.getConexion();
+         PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        
+        pstmt.setInt(1, prestamo.getCliente().getId());
+        pstmt.setInt(2, prestamo.getEmpleado().getId());
+        pstmt.setDouble(3, prestamo.getMonto());
+        pstmt.setDouble(4, prestamo.getInteres());
+        pstmt.setInt(5, prestamo.getCuotas());
+        pstmt.setDate(6, Date.valueOf(prestamo.getFechaInicio()));
+        pstmt.setString(7, prestamo.getEstado());
+        pstmt.setDouble(8, prestamo.getSaldoPendiente());
+        
+        pstmt.executeUpdate();
+        
+        try (ResultSet rs = pstmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                prestamo.setId(rs.getInt(1));
+                
+                // ✅ GUARDAR EN ARCHIVO
+                String linea = String.format("%d|%d|%d|%.2f|%.2f|%d|%s|%s|%.2f",
+                    prestamo.getId(),
+                    prestamo.getCliente().getId(),
+                    prestamo.getEmpleado().getId(),
+                    prestamo.getMonto(),
+                    prestamo.getInteres(),
+                    prestamo.getCuotas(),
+                    prestamo.getFechaInicio().toString(),
+                    prestamo.getEstado(),
+                    prestamo.getSaldoPendiente()
+                );
+                ArchivoUtil.guardarLinea("data/prestamos.txt", linea);
+            }
+        }
+        
+    } catch (SQLException e) {
+        System.err.println("Error al guardar préstamo: " + e.getMessage());
+    }
+}
     
     @Override
     public Prestamo buscarPorId(int id) {

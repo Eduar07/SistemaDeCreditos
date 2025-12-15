@@ -1,5 +1,6 @@
 package com.eduar.dao;
 
+import com.eduar.util.ArchivoUtil;
 import com.eduar.modelo.Empleado;
 import com.eduar.util.ConexionDb;
 import java.sql.*;
@@ -41,39 +42,49 @@ public class EmpleadoDAOImpl implements IDao<Empleado> {
     // ═══════════════════════════════════════════════════════════
     
     @Override
-    public void guardar(Empleado empleado) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = ConexionDb.getConexion();
-            stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-            
-            stmt.setString(1, empleado.getNombre());
-            stmt.setString(2, empleado.getDocumento());
-            stmt.setString(3, empleado.getCorreo());
-            stmt.setString(4, empleado.getRol());
-            stmt.setDouble(5, empleado.getSalario());
-            
-            int filasAfectadas = stmt.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-                rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    empleado.setId(rs.getInt(1));
-                }
-                System.out.println("✓ Empleado guardado con ID: " + empleado.getId());
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error al guardar empleado: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            cerrarRecursos(conn, stmt, rs);
-        }
-    }
+public void guardar(Empleado empleado) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
     
+    try {
+        conn = ConexionDb.getConexion();
+        stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+        
+        stmt.setString(1, empleado.getNombre());
+        stmt.setString(2, empleado.getDocumento());
+        stmt.setString(3, empleado.getCorreo());
+        stmt.setString(4, empleado.getRol());
+        stmt.setDouble(5, empleado.getSalario());
+        
+        int filasAfectadas = stmt.executeUpdate();
+        
+        if (filasAfectadas > 0) {
+            rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                empleado.setId(rs.getInt(1));
+            }
+            System.out.println("✓ Empleado guardado con ID: " + empleado.getId());
+            
+            // ✅ GUARDAR EN ARCHIVO
+            String linea = String.format("%d|%s|%s|%s|%s|%.2f",
+                empleado.getId(),
+                empleado.getNombre(),
+                empleado.getDocumento(),
+                empleado.getCorreo(),
+                empleado.getRol(),
+                empleado.getSalario()
+            );
+            ArchivoUtil.guardarLinea("data/empleados.txt", linea);
+        }
+        
+    } catch (SQLException e) {
+        System.err.println("Error al guardar empleado: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        cerrarRecursos(conn, stmt, rs);
+    }
+}
     
     // ═══════════════════════════════════════════════════════════
     //                    READ (LISTAR TODOS)
