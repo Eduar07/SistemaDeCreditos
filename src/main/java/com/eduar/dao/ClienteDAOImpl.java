@@ -1,4 +1,5 @@
 package com.eduar.dao;
+import com.eduar.util.ArchivoUtil;
 
 import com.eduar.modelo.Cliente;
 import com.eduar.util.ConexionDb;
@@ -42,40 +43,48 @@ public class ClienteDAOImpl implements IDao<Cliente> {
     // ═══════════════════════════════════════════════════════════
     //                    CREATE (GUARDAR)
     // ═══════════════════════════════════════════════════════════
-    
     @Override
-    public void guardar(Cliente cliente) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = ConexionDb.getConexion();
-            stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-            
-            stmt.setString(1, cliente.getNombre());
-            stmt.setString(2, cliente.getDocumento());
-            stmt.setString(3, cliente.getCorreo());
-            stmt.setString(4, cliente.getTelefono());
-            
-            int filasAfectadas = stmt.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-                rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    cliente.setId(rs.getInt(1));
-                }
-                System.out.println("✓ Cliente guardado con ID: " + cliente.getId());
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error al guardar cliente: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            cerrarRecursos(conn, stmt, rs);
-        }
-    }
+public void guardar(Cliente cliente) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
     
+    try {
+        conn = ConexionDb.getConexion();
+        stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+        
+        stmt.setString(1, cliente.getNombre());
+        stmt.setString(2, cliente.getDocumento());
+        stmt.setString(3, cliente.getCorreo());
+        stmt.setString(4, cliente.getTelefono());
+        
+        int filasAfectadas = stmt.executeUpdate();
+        
+        if (filasAfectadas > 0) {
+            rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                cliente.setId(rs.getInt(1));
+            }
+            System.out.println("✓ Cliente guardado con ID: " + cliente.getId());
+            
+            // ✅ GUARDAR EN ARCHIVO
+            String linea = String.format("%d|%s|%s|%s|%s",
+                cliente.getId(),
+                cliente.getNombre(),
+                cliente.getDocumento(),
+                cliente.getCorreo(),
+                cliente.getTelefono()
+            );
+            ArchivoUtil.guardarLinea("data/clientes.txt", linea);
+        }
+        
+    } catch (SQLException e) {
+        System.err.println("Error al guardar cliente: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        cerrarRecursos(conn, stmt, rs);
+    }
+}
     
     // ═══════════════════════════════════════════════════════════
     //                    READ (LISTAR TODOS)

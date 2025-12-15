@@ -1,5 +1,5 @@
 package com.eduar.dao;
-
+import com.eduar.util.ArchivoUtil;
 import com.eduar.modelo.Pago;
 import com.eduar.modelo.Prestamo;
 import com.eduar.util.ConexionDb;
@@ -51,40 +51,48 @@ public class PagoDAOImpl implements IDao<Pago> {
     // ═══════════════════════════════════════════════════════════
     //                    CREATE (GUARDAR)
     // ═══════════════════════════════════════════════════════════
-    
     @Override
-    public void guardar(Pago pago) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            conn = ConexionDb.getConexion();
-            stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-            
-            stmt.setInt(1, pago.getPrestamo().getId());
-            stmt.setDate(2, Date.valueOf(pago.getFechaPago()));
-            stmt.setDouble(3, pago.getMonto());
-            stmt.setString(4, pago.getObservaciones());
-            
-            int filasAfectadas = stmt.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-                rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    pago.setId(rs.getInt(1));
-                }
-                System.out.println("✓ Pago guardado con ID: " + pago.getId());
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error al guardar pago: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            cerrarRecursos(conn, stmt, rs);
-        }
-    }
+public void guardar(Pago pago) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
     
+    try {
+        conn = ConexionDb.getConexion();
+        stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+        
+        stmt.setInt(1, pago.getPrestamo().getId());
+        stmt.setDate(2, Date.valueOf(pago.getFechaPago()));
+        stmt.setDouble(3, pago.getMonto());
+        stmt.setString(4, pago.getObservaciones());
+        
+        int filasAfectadas = stmt.executeUpdate();
+        
+        if (filasAfectadas > 0) {
+            rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                pago.setId(rs.getInt(1));
+            }
+            System.out.println("✓ Pago guardado con ID: " + pago.getId());
+            
+            // ✅ GUARDAR EN ARCHIVO
+            String linea = String.format("%d|%d|%s|%.2f|%s",
+                pago.getId(),
+                pago.getPrestamo().getId(),
+                pago.getFechaPago().toString(),
+                pago.getMonto(),
+                pago.getObservaciones() != null ? pago.getObservaciones() : ""
+            );
+            ArchivoUtil.guardarLinea("data/pagos.txt", linea);
+        }
+        
+    } catch (SQLException e) {
+        System.err.println("Error al guardar pago: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        cerrarRecursos(conn, stmt, rs);
+    }
+}
     
     // ═══════════════════════════════════════════════════════════
     //                    READ (LISTAR TODOS)

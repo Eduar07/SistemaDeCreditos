@@ -5,14 +5,14 @@ com/eduar/util/Validador.class
 com/eduar/servicio/ClienteServicio.class
 com/eduar/Main.class
 com/eduar/excepcion/PagoException.class
-com/eduar/TestIntegracion.class
 com/eduar/servicio/EmpleadoServicio.class
+com/eduar/TestIntegracion.class
 com/eduar/excepcion/ClienteException.class
 com/eduar/servicio/ReporteServicio.class
 com/eduar/modelo/Cliente.class
-com/eduar/dao/IDao.class
-com/eduar/dao/ClienteDAOImpl.class
 com/eduar/excepcion/EmpleadoException.class
+com/eduar/dao/ClienteDAOImpl.class
+com/eduar/dao/IDao.class
 com/eduar/modelo/Empleado.class
 com/eduar/modelo/Prestamo.class
 com/eduar/dao/PagoDAOImpl.class
