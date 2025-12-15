@@ -112,31 +112,39 @@ public class ClienteDAOImpl implements IDao<Cliente> {
     //                    READ (BUSCAR POR ID)
     // ═══════════════════════════════════════════════════════════
     
-    public Cliente buscarPorId(int id) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        Cliente cliente = null;
+@Override
+public Cliente buscarPorId(int id) {
+    String sql = "SELECT * FROM clientes WHERE id = ?";  // ← SIN AND activo = 1
+    
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
+    try {
+        conn = ConexionDb.getConexion();
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, id);
+        rs = pstmt.executeQuery();
         
-        try {
-            conn = ConexionDb.getConexion();
-            stmt = conn.prepareStatement(SELECT_BY_ID);
-            stmt.setInt(1, id);
-            rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                cliente = mapearResultSet(rs);
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error al buscar cliente por ID: " + e.getMessage());
-        } finally {
-            cerrarRecursos(conn, stmt, rs);
+        if (rs.next()) {
+            Cliente cliente = new Cliente(
+                rs.getString("nombre"),
+                rs.getString("documento"),
+                rs.getString("correo"),
+                rs.getString("telefono")
+            );
+            cliente.setId(rs.getInt("id"));
+            return cliente;
         }
         
-        return cliente;
+    } catch (SQLException e) {
+        System.err.println("Error al buscar cliente: " + e.getMessage());
+    } finally {
+        cerrarRecursos(conn, pstmt, rs);
     }
     
+    return null;
+}
     
     // ═══════════════════════════════════════════════════════════
     //                    READ (BUSCAR POR DOCUMENTO)
@@ -172,6 +180,7 @@ public class ClienteDAOImpl implements IDao<Cliente> {
     //                    UPDATE (ACTUALIZAR)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public boolean actualizar(Cliente cliente) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -208,6 +217,7 @@ public class ClienteDAOImpl implements IDao<Cliente> {
     //                    DELETE (ELIMINAR LÓGICO)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public boolean eliminar(int id) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -239,6 +249,7 @@ public class ClienteDAOImpl implements IDao<Cliente> {
     //                    CONTAR
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public int contar() {
         Connection conn = null;
         PreparedStatement stmt = null;

@@ -9,6 +9,7 @@
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/excepcion/PagoException.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/modelo/Cliente.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/modelo/Persona.java
+/home/eduar/Tucredito/proyecto/src/main/java/com/eduar/TestIntegracion.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/servicio/ClienteServicio.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/modelo/Prestamo.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/dao/PagoDAOImpl.java
@@ -17,6 +18,7 @@
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/util/ConexionDb.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/dao/ClienteDAOImpl.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/excepcion/EmpleadoException.java
+/home/eduar/Tucredito/proyecto/src/main/java/com/eduar/MenuPrincipal.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/TestValidador.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/dao/IDao.java
 /home/eduar/Tucredito/proyecto/src/main/java/com/eduar/excepcion/ClienteException.java

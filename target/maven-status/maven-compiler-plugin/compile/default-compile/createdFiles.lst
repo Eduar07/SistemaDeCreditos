@@ -5,6 +5,7 @@ com/eduar/util/Validador.class
 com/eduar/servicio/ClienteServicio.class
 com/eduar/Main.class
 com/eduar/excepcion/PagoException.class
+com/eduar/TestIntegracion.class
 com/eduar/servicio/EmpleadoServicio.class
 com/eduar/excepcion/ClienteException.class
 com/eduar/servicio/ReporteServicio.class
@@ -23,3 +24,4 @@ com/eduar/modelo/Pago.class
 com/eduar/servicio/PrestamoServicio.class
 com/eduar/util/ConexionDb.class
 com/eduar/TestValidador.class
+com/eduar/MenuPrincipal.class

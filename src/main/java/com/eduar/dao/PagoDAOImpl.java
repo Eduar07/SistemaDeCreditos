@@ -123,6 +123,7 @@ public class PagoDAOImpl implements IDao<Pago> {
     //                    READ (BUSCAR POR ID)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public Pago buscarPorId(int id) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -186,6 +187,7 @@ public class PagoDAOImpl implements IDao<Pago> {
     //                    UPDATE (ACTUALIZAR)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public boolean actualizar(Pago pago) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -222,6 +224,7 @@ public class PagoDAOImpl implements IDao<Pago> {
     //                    DELETE (ELIMINAR)
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public boolean eliminar(int id) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -253,6 +256,7 @@ public class PagoDAOImpl implements IDao<Pago> {
     //                    CONTAR
     // ═══════════════════════════════════════════════════════════
     
+    @Override
     public int contar() {
         Connection conn = null;
         PreparedStatement stmt = null;

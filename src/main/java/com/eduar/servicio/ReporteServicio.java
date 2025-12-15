@@ -121,8 +121,7 @@ public class ReporteServicio {
         System.out.println("\nTotal: " + clientes.size() + " clientes\n");
     }
     
-    
-    // ═══════════════════════════════════════════════════════════
+   // ═══════════════════════════════════════════════════════════
     //                    REPORTE DE PRÉSTAMOS
     // ═══════════════════════════════════════════════════════════
     
@@ -140,14 +139,12 @@ public class ReporteServicio {
         
         System.out.printf("%-5s %-20s %-15s %-8s %-10s %-15s %-15s%n",
             "ID", "Cliente", "Monto", "Cuotas", "Estado", "Saldo", "Fecha");
-        System.out.println("─".repeat(95));
+        System.out.println(repetir("-", 95));
         
         for (Prestamo p : prestamos) {
-            System.out.printf("%-5d %-20s $%-14,.0f %-8d %-10s $%-14,.0f %s%n",
+            System.out.printf("%-5d %-20s $%,14.0f %-8d %-10s $%,14.0f %s%n",
                 p.getId(),
-                p.getCliente().getNombre().length() > 20 ? 
-                    p.getCliente().getNombre().substring(0, 17) + "..." : 
-                    p.getCliente().getNombre(),
+                truncar(p.getCliente().getNombre(), 20),
                 p.getMonto(),
                 p.getCuotas(),
                 p.getEstado(),
@@ -157,6 +154,24 @@ public class ReporteServicio {
         }
         
         System.out.println("\nTotal: " + prestamos.size() + " préstamos\n");
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    //                    MÉTODOS AUXILIARES
+    // ═══════════════════════════════════════════════════════════
+    
+    private String truncar(String texto, int longitud) {
+        if (texto == null) return "";
+        if (texto.length() <= longitud) return texto;
+        return texto.substring(0, longitud - 3) + "...";
+    }
+    
+    private String repetir(String caracter, int veces) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < veces; i++) {
+            sb.append(caracter);
+        }
+        return sb.toString();
     }
     
     
@@ -220,7 +235,6 @@ public class ReporteServicio {
 // ═══════════════════════════════════════════════════════════
 //                    REPORTE DE PRÉSTAMOS VENCIDOS
 // ═══════════════════════════════════════════════════════════
-
 public void generarReportePrestamosVencidos() {
     System.out.println("\n╔═══════════════════════════════════════╗");
     System.out.println("║   REPORTE DE PRÉSTAMOS VENCIDOS      ║");
@@ -235,16 +249,14 @@ public void generarReportePrestamosVencidos() {
     
     System.out.printf("%-5s %-20s %-15s %-15s %-12s%n",
         "ID", "Cliente", "Monto", "Saldo", "Fecha Inicio");
-    System.out.println("─".repeat(70));
+    System.out.println(repetir("-", 70));
     
     double totalVencido = 0;
     
     for (Prestamo p : vencidos) {
-        System.out.printf("%-5d %-20s $%-14,.0f $%-14,.0f %s%n",
+        System.out.printf("%-5d %-20s $%,14.0f $%,14.0f %s%n",
             p.getId(),
-            p.getCliente().getNombre().length() > 20 ? 
-                p.getCliente().getNombre().substring(0, 17) + "..." : 
-                p.getCliente().getNombre(),
+            truncar(p.getCliente().getNombre(), 20),
             p.getMonto(),
             p.getSaldoPendiente(),
             p.getFechaInicio()
@@ -257,5 +269,6 @@ public void generarReportePrestamosVencidos() {
     System.out.println("⚠️  Cartera vencida: $" + String.format("%,.2f", totalVencido));
     System.out.println();
 }
+
 }
 
