@@ -3,18 +3,11 @@ package com.eduar.modelo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * Clase Prestamo - Representa un préstamo del sistema
- * 
- * @author Eduar Humberto Guerrero Vergel
- * @version 1.0
- */
+/*=======================================================EXAMEN DE JAVA======================================================== */
+/*============================================================================================================================= */
 public class Prestamo {
     
-    // ═══════════════════════════════════════════════════════════
-    //                        ATRIBUTOS
-    // ═══════════════════════════════════════════════════════════
-    
+    /*Aqui realizamos los atributos de la clase pretamo */
     private int id;
     private Cliente cliente;
     private Empleado empleado;
@@ -27,28 +20,15 @@ public class Prestamo {
     private ArrayList<Pago> pagos;
     
     
-    // ═══════════════════════════════════════════════════════════
-    //                      CONSTRUCTORES
-    // ═══════════════════════════════════════════════════════════
+    /*==================================================Constructores=========================================================== */
     
-    /**
-     * Constructor vacío
-     */
+   
     public Prestamo() {
         this.pagos = new ArrayList<>();
         this.estado = "pendiente";
     }
     
-    /**
-     * Constructor sin ID (para crear nuevos préstamos)
-     * 
-     * @param cliente Cliente que solicita
-     * @param empleado Empleado que aprueba
-     * @param monto Monto del préstamo
-     * @param interes Tasa de interés
-     * @param cuotas Número de cuotas
-     * @param fechaInicio Fecha de inicio
-     */
+    /* Constructor sin ID */
     public Prestamo(Cliente cliente, Empleado empleado, double monto, 
                     double interes, int cuotas, LocalDate fechaInicio) {
         this.cliente = cliente;
@@ -62,19 +42,7 @@ public class Prestamo {
         this.pagos = new ArrayList<>();
     }
     
-    /**
-     * Constructor completo con ID (para cargar desde BD/archivo)
-     * 
-     * @param id ID del préstamo
-     * @param cliente Cliente del préstamo
-     * @param empleado Empleado que aprobó
-     * @param monto Monto del préstamo
-     * @param interes Tasa de interés
-     * @param cuotas Número de cuotas
-     * @param fechaInicio Fecha de inicio
-     * @param estado Estado actual
-     * @param saldoPendiente Saldo pendiente
-     */
+   /* Constructor con ID */
     public Prestamo(int id, Cliente cliente, Empleado empleado, double monto,
                     double interes, int cuotas, LocalDate fechaInicio, 
                     String estado, double saldoPendiente) {
@@ -91,9 +59,7 @@ public class Prestamo {
     }
     
     
-    // ═══════════════════════════════════════════════════════════
-    //                    GETTERS Y SETTERS
-    // ═══════════════════════════════════════════════════════════
+ /* Aqui se va a realizar los metodos get y getters*/
     
     public int getId() {
         return id;
@@ -128,7 +94,7 @@ public class Prestamo {
             this.monto = monto;
             this.saldoPendiente = calcularMontoTotal();
         } else {
-            throw new IllegalArgumentException("El monto debe ser mayor a 0");
+            throw new IllegalArgumentException("EL Monto Debe ser Mayor a 0");
         }
     }
     
@@ -140,7 +106,7 @@ public class Prestamo {
         if (interes >= 0 && interes <= 100) {
             this.interes = interes;
         } else {
-            throw new IllegalArgumentException("El interés debe estar entre 0 y 100");
+            throw new IllegalArgumentException("El Interés debe estar entre 0 y 100");
         }
     }
     
@@ -189,28 +155,21 @@ public class Prestamo {
     }
     
     
-    // ═══════════════════════════════════════════════════════════
-    //                   MÉTODOS DE CÁLCULO
-    // ═══════════════════════════════════════════════════════════
+   /* Aqui realizamos el metodo calculo para calcular el monto total */
     
-    /**
-     * Calcula el monto total del préstamo (capital + intereses)
-     */
+    /*Método calcularTotalAPagar() que retorne el monto total a pagar (monto + intereses), segun lo Pide Adrian parchao
+ */
     public double calcularMontoTotal() {
         double montoInteres = monto * (interes / 100);
         return monto + montoInteres;
     }
     
-    /**
-     * Calcula el valor de la cuota mensual
-     */
+    
     public double calcularCuotaMensual() {
         return calcularMontoTotal() / cuotas;
     }
     
-    /**
-     * Calcula cuántas cuotas se han pagado
-     */
+ 
     public int calcularCuotasPagadas() {
         double totalPagado = calcularTotalPagado();
         double cuotaMensual = calcularCuotaMensual();
@@ -221,9 +180,7 @@ public class Prestamo {
         return 0;
     }
     
-    /**
-     * Calcula el total pagado hasta ahora
-     */
+ 
     public double calcularTotalPagado() {
         double total = 0;
         for (Pago pago : pagos) {
@@ -232,9 +189,7 @@ public class Prestamo {
         return total;
     }
     
-    /**
-     * Calcula el porcentaje pagado del préstamo
-     */
+    
     public double calcularPorcentajePagado() {
         double montoTotal = calcularMontoTotal();
         double totalPagado = calcularTotalPagado();
@@ -246,13 +201,7 @@ public class Prestamo {
     }
     
     
-    // ═══════════════════════════════════════════════════════════
-    //                   MÉTODOS DE NEGOCIO
-    // ═══════════════════════════════════════════════════════════
-    
-    /**
-     * Registra un pago y actualiza el saldo pendiente
-     */
+    /* Metodo negocio del prestamo */
     public void registrarPago(Pago pago) {
         if (pago == null) {
             throw new IllegalArgumentException("El pago no puede ser null");
@@ -271,16 +220,13 @@ public class Prestamo {
         }
     }
     
-    /**
-     * Verifica si el préstamo está vencido
-     */
+   
     public boolean estaVencido() {
-    // Si ya está marcado como vencido en BD
+
     if (estado.equalsIgnoreCase("vencido")) {
         return true;
     }
     
-    // Si ya está pagado, no puede estar vencido
     if (estado.equalsIgnoreCase("pagado")) {
         return false;
     }
@@ -289,9 +235,7 @@ public class Prestamo {
         return LocalDate.now().isAfter(fechaVencimiento);
     }
     
-    /**
-     * Verifica si el préstamo está al día
-     */
+   
     public boolean estaAlDia() {
         int cuotasPagadas = calcularCuotasPagadas();
         
@@ -302,17 +246,13 @@ public class Prestamo {
         return cuotasPagadas >= mesesTranscurridos;
     }
     
-    /**
-     * Obtiene el número de cuotas pendientes
-     */
+   
     public int calcularCuotasPendientes() {
         return cuotas - calcularCuotasPagadas();
     }
     
-    
-    // ═══════════════════════════════════════════════════════════
-    //                      toString()
-    // ═══════════════════════════════════════════════════════════
+/* Sobrescribe toString() para mostrar la información del préstamo. lo que pide Adrian Parchao
+ */
     
     @Override
     public String toString() {
