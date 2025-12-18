@@ -112,6 +112,8 @@ public class GestorPrestamos {
         return prestamoDAO.buscarPorId(id);
     }
     
+
+    /* Listamos los prestamos en este codigo */
     public ArrayList<Prestamo> listarTodos() {
         return prestamoDAO.listar();
     }

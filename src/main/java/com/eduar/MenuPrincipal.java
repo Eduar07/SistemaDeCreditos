@@ -311,6 +311,9 @@ public class MenuPrincipal {
             return;
         }
         
+        //aqui en menu tenemos tambien la seccion de listar prestamos//
+
+        
         ArrayList<Prestamo> prestamos = GestorPrestamos.listarTodos();
         boolean tienePrestamos = false;
         

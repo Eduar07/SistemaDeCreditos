@@ -9,6 +9,10 @@ import com.eduar.util.ConexionDb;
 import java.sql.*;
 import java.util.ArrayList;
 
+
+
+/*Implemantamos la Persistencia con JDBC */
+
 public class PrestamoDAOImpl implements IDao<Prestamo> {
     
     private ClienteDAOImpl clienteDAO;
@@ -19,11 +23,16 @@ public class PrestamoDAOImpl implements IDao<Prestamo> {
         this.empleadoDAO = new EmpleadoDAOImpl();
     }
     
+
+    /* Inserte el préstamo en la tabla prestamos dentro de la base de datos crediya_db.
+ */
     @Override
 public void guardar(Prestamo prestamo) {
     String sql = "INSERT INTO prestamos (cliente_id, empleado_id, monto, interes, cuotas, " +
                  "fecha_inicio, estado, saldo_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
+
+                 // aqui traemos la clase conection con el fin de 
     try (Connection conn = ConexionDb.getConexion();
          PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         
