@@ -16,13 +16,13 @@ public class ReporteServicio {
     
     private ClienteServicio clienteServicio;
     private EmpleadoServicio empleadoServicio;
-    private PrestamoServicio prestamoServicio;
+    private GestorPrestamos GestorPrestamos;
     private PagoServicio pagoServicio;
     
     public ReporteServicio() {
         this.clienteServicio = new ClienteServicio();
         this.empleadoServicio = new EmpleadoServicio();
-        this.prestamoServicio = new PrestamoServicio();
+        this.GestorPrestamos = new GestorPrestamos();
         this.pagoServicio = new PagoServicio();
     }
     
@@ -56,10 +56,10 @@ public class ReporteServicio {
         System.out.println();
         
         // Préstamos
-        int totalPrestamos = prestamoServicio.obtenerTotalPrestamos();
-        double montoPrestado = prestamoServicio.calcularMontoTotalPrestado();
-        double carteraTotal = prestamoServicio.calcularCarteraTotal();
-        ArrayList<Prestamo> vencidos = prestamoServicio.obtenerPrestamosVencidos();
+        int totalPrestamos = GestorPrestamos.obtenerTotalPrestamos();
+        double montoPrestado = GestorPrestamos.calcularMontoTotalPrestado();
+        double carteraTotal = GestorPrestamos.calcularCarteraTotal();
+        ArrayList<Prestamo> vencidos = GestorPrestamos.obtenerPrestamosVencidos();
         
         System.out.println("💰 PRÉSTAMOS");
         System.out.println("   Total de préstamos: " + totalPrestamos);
@@ -132,7 +132,7 @@ public class ReporteServicio {
         System.out.println("║      REPORTE DE PRÉSTAMOS            ║");
         System.out.println("╚═══════════════════════════════════════╝\n");
         
-        ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
+        ArrayList<Prestamo> prestamos = GestorPrestamos.listarTodos();
         
         if (prestamos.isEmpty()) {
             System.out.println("No hay préstamos registrados.\n");
@@ -200,7 +200,7 @@ public class ReporteServicio {
     System.out.println("Teléfono: " + cliente.getTelefono());
     System.out.println();
     
-    ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorCliente(clienteId);
+    ArrayList<Prestamo> prestamos = GestorPrestamos.buscarPorCliente(clienteId);
     
     if (prestamos.isEmpty()) {
         System.out.println("El cliente no tiene préstamos registrados.\n");
@@ -242,7 +242,7 @@ public void generarReportePrestamosVencidos() {
     System.out.println("║   REPORTE DE PRÉSTAMOS VENCIDOS      ║");
     System.out.println("╚═══════════════════════════════════════╝\n");
     
-    ArrayList<Prestamo> vencidos = prestamoServicio.obtenerPrestamosVencidos();
+    ArrayList<Prestamo> vencidos = GestorPrestamos.obtenerPrestamosVencidos();
     
     if (vencidos.isEmpty()) {
         System.out.println("✓ No hay préstamos vencidos.\n");
@@ -280,7 +280,7 @@ public void generarReportePrestamosVencidos() {
  * Obtiene préstamos activos (estado = pendiente) usando Stream filter
  */
 public ArrayList<Prestamo> obtenerPrestamosActivos() {
-    return prestamoServicio.listarTodos().stream()
+    return GestorPrestamos.listarTodos().stream()
         .filter(p -> p.getEstado().equalsIgnoreCase("pendiente"))
         .collect(Collectors.toCollection(ArrayList::new));
 }
@@ -289,7 +289,7 @@ public ArrayList<Prestamo> obtenerPrestamosActivos() {
  * Obtiene préstamos vencidos usando Stream filter
  */
 public ArrayList<Prestamo> obtenerPrestamosVencidosConStream() {
-    return prestamoServicio.listarTodos().stream()
+    return GestorPrestamos.listarTodos().stream()
         .filter(p -> p.getEstado().equalsIgnoreCase("vencido") || p.estaVencido())
         .collect(Collectors.toCollection(ArrayList::new));
 }
@@ -298,7 +298,7 @@ public ArrayList<Prestamo> obtenerPrestamosVencidosConStream() {
  * Obtiene clientes morosos (con préstamos vencidos)
  */
 public ArrayList<Cliente> obtenerClientesMorosos() {
-    return prestamoServicio.listarTodos().stream()
+    return GestorPrestamos.listarTodos().stream()
         .filter(p -> p.getEstado().equalsIgnoreCase("vencido") || p.estaVencido())
         .map(Prestamo::getCliente)
         .distinct()
@@ -309,7 +309,7 @@ public ArrayList<Cliente> obtenerClientesMorosos() {
  * Calcula total prestado por cada empleado usando groupingBy
  */
 public Map<String, Double> obtenerTotalPrestadoPorEmpleado() {
-    return prestamoServicio.listarTodos().stream()
+    return GestorPrestamos.listarTodos().stream()
         .collect(Collectors.groupingBy(
             p -> p.getEmpleado().getNombre(),
             Collectors.summingDouble(Prestamo::getMonto)
@@ -417,7 +417,7 @@ public void generarReporteTotalPorEmpleado() {
  * Obtiene préstamos ordenados por monto (mayor a menor)
  */
 public ArrayList<Prestamo> obtenerPrestamosOrdenadosPorMonto() {
-    return prestamoServicio.listarTodos().stream()
+    return GestorPrestamos.listarTodos().stream()
         .sorted((p1, p2) -> Double.compare(p2.getMonto(), p1.getMonto()))
         .collect(Collectors.toCollection(ArrayList::new));
 }
@@ -426,7 +426,7 @@ public ArrayList<Prestamo> obtenerPrestamosOrdenadosPorMonto() {
  * Calcula el total de la cartera usando mapToDouble + sum
  */
 public double calcularTotalCartera() {
-    return prestamoServicio.listarTodos().stream()
+    return GestorPrestamos.listarTodos().stream()
         .mapToDouble(Prestamo::getSaldoPendiente)
         .sum();
 }
@@ -435,7 +435,7 @@ public double calcularTotalCartera() {
  * Obtiene estadísticas de préstamos usando Collectors
  */
 public Map<String, Object> obtenerEstadisticasPrestamos() {
-    ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
+    ArrayList<Prestamo> prestamos = GestorPrestamos.listarTodos();
     
     Map<String, Object> estadisticas = new HashMap<>();
     

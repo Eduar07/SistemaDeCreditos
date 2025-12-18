@@ -19,7 +19,7 @@ public class MenuPrincipal {
     private static Scanner scanner = new Scanner(System.in);
     private static ClienteServicio clienteServicio = new ClienteServicio();
     private static EmpleadoServicio empleadoServicio = new EmpleadoServicio();
-    private static PrestamoServicio prestamoServicio = new PrestamoServicio();
+    private static GestorPrestamos GestorPrestamos = new GestorPrestamos();
     private static PagoServicio pagoServicio = new PagoServicio();
     private static ReporteServicio reporteServicio = new ReporteServicio();
     
@@ -311,7 +311,7 @@ public class MenuPrincipal {
             return;
         }
         
-        ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
+        ArrayList<Prestamo> prestamos = GestorPrestamos.listarTodos();
         boolean tienePrestamos = false;
         
         for (Prestamo p : prestamos) {
@@ -537,7 +537,7 @@ public class MenuPrincipal {
             return;
         }
         
-        ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorCliente(id);
+        ArrayList<Prestamo> prestamos = GestorPrestamos.buscarPorCliente(id);
         
         if (!prestamos.isEmpty()) {
             System.out.println(ColoresConsola.error("ERROR: No se puede eliminar este cliente"));
@@ -634,7 +634,7 @@ public class MenuPrincipal {
         
         System.out.println("Cliente: " + cliente.getNombre());
         
-        if (prestamoServicio.tienePrestamoPendiente(clienteId)) {
+        if (GestorPrestamos.tienePrestamoPendiente(clienteId)) {
             System.out.println(ColoresConsola.error("El cliente ya tiene un préstamo pendiente."));
             pausar();
             return;
@@ -665,7 +665,7 @@ public class MenuPrincipal {
         int cuotas = leerEntero();
         scanner.nextLine();
         
-        if (prestamoServicio.crearPrestamo(clienteId, empleadoId, monto, interes, cuotas, LocalDate.now())) {
+        if (GestorPrestamos.crearPrestamo(clienteId, empleadoId, monto, interes, cuotas, LocalDate.now())) {
             pausar();
         } else {
             System.out.println(ColoresConsola.error("No se pudo crear el préstamo."));
@@ -675,7 +675,7 @@ public class MenuPrincipal {
     
     private static void listarPrestamos() {
         System.out.println(ColoresConsola.titulo("\n--- Lista de Préstamos ---"));
-        ArrayList<Prestamo> prestamos = prestamoServicio.listarTodos();
+        ArrayList<Prestamo> prestamos = GestorPrestamos.listarTodos();
         
         if (prestamos.isEmpty()) {
             System.out.println(ColoresConsola.advertencia("No hay préstamos registrados."));
@@ -704,7 +704,7 @@ public class MenuPrincipal {
         int id = leerEntero();
         scanner.nextLine();
         
-        Prestamo prestamo = prestamoServicio.buscarPorId(id);
+        Prestamo prestamo = GestorPrestamos.buscarPorId(id);
         
         if (prestamo != null) {
             System.out.println("\n" + prestamo);
@@ -719,7 +719,7 @@ public class MenuPrincipal {
         int clienteId = leerEntero();
         scanner.nextLine();
         
-        ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorCliente(clienteId);
+        ArrayList<Prestamo> prestamos = GestorPrestamos.buscarPorCliente(clienteId);
         
         if (prestamos.isEmpty()) {
             System.out.println(ColoresConsola.error("No se encontraron préstamos para este cliente."));
@@ -735,7 +735,7 @@ public class MenuPrincipal {
     private static void buscarPrestamosPorEstado() {System.out.print("\nIngrese estado (pendiente/pagado/vencido): ");
     String estado = scanner.nextLine();
     
-    ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorEstado(estado);
+    ArrayList<Prestamo> prestamos = GestorPrestamos.buscarPorEstado(estado);
     
     if (prestamos.isEmpty()) {
         System.out.println(ColoresConsola.error("No se encontraron préstamos con ese estado."));
@@ -753,7 +753,7 @@ private static void cambiarEstadoPrestamo() {
     int id = leerEntero();
     scanner.nextLine();
     
-    Prestamo prestamo = prestamoServicio.buscarPorId(id);
+    Prestamo prestamo = GestorPrestamos.buscarPorId(id);
     
     if (prestamo == null) {
         System.out.println(ColoresConsola.error("Préstamo no encontrado."));
@@ -765,7 +765,7 @@ private static void cambiarEstadoPrestamo() {
     System.out.print("Nuevo estado (pendiente/pagado/vencido): ");
     String nuevoEstado = scanner.nextLine();
     
-    if (prestamoServicio.actualizarEstado(id, nuevoEstado)) {
+    if (GestorPrestamos.actualizarEstado(id, nuevoEstado)) {
         pausar();
     } else {
         pausar();
@@ -774,7 +774,7 @@ private static void cambiarEstadoPrestamo() {
 
 private static void verPrestamosVencidos() {
     System.out.println(ColoresConsola.advertencia("\n--- Préstamos Vencidos ---"));
-    ArrayList<Prestamo> vencidos = prestamoServicio.obtenerPrestamosVencidos();
+    ArrayList<Prestamo> vencidos = GestorPrestamos.obtenerPrestamosVencidos();
     
     if (vencidos.isEmpty()) {
         System.out.println(ColoresConsola.exito("No hay préstamos vencidos."));
@@ -844,7 +844,7 @@ private static void registrarPago() {
     int prestamoId = leerEntero();
     scanner.nextLine();
     
-    Prestamo prestamo = prestamoServicio.buscarPorId(prestamoId);
+    Prestamo prestamo = GestorPrestamos.buscarPorId(prestamoId);
     
     if (prestamo == null) {
         System.out.println(ColoresConsola.error("Préstamo no encontrado."));

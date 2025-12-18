@@ -16,7 +16,7 @@ public class TestIntegracion {
     
     private static ClienteServicio clienteServicio = new ClienteServicio();
     private static EmpleadoServicio empleadoServicio = new EmpleadoServicio();
-    private static PrestamoServicio prestamoServicio = new PrestamoServicio();
+    private static GestorPrestamos GestorPrestamos = new GestorPrestamos();
     private static PagoServicio pagoServicio = new PagoServicio();
     
     public static void main(String[] args) {
@@ -204,7 +204,7 @@ public class TestIntegracion {
             
             // Crear préstamo
             System.out.print("→ Creando préstamo... ");
-            boolean creado = prestamoServicio.crearPrestamo(
+            boolean creado = GestorPrestamos.crearPrestamo(
                 cliente.getId(),
                 empleado.getId(),
                 2000000,    // Monto
@@ -221,7 +221,7 @@ public class TestIntegracion {
             
             // Verificar que el préstamo existe
             System.out.print("→ Verificando préstamo creado... ");
-            ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorCliente(cliente.getId());
+            ArrayList<Prestamo> prestamos = GestorPrestamos.buscarPorCliente(cliente.getId());
             
             if (prestamos.isEmpty()) {
                 System.out.println("✗ FALLO");
@@ -271,7 +271,7 @@ public class TestIntegracion {
         try {
             // Buscar un préstamo pendiente
             System.out.print("→ Buscando préstamo pendiente... ");
-            ArrayList<Prestamo> pendientes = prestamoServicio.buscarPorEstado("pendiente");
+            ArrayList<Prestamo> pendientes = GestorPrestamos.buscarPorEstado("pendiente");
             
             if (pendientes.isEmpty()) {
                 System.out.println("✗ FALLO (No hay préstamos pendientes)");
@@ -301,7 +301,7 @@ public class TestIntegracion {
             
             // Verificar que el saldo se actualizó
             System.out.print("→ Verificando actualización de saldo... ");
-            Prestamo prestamoActualizado = prestamoServicio.buscarPorId(prestamo.getId());
+            Prestamo prestamoActualizado = GestorPrestamos.buscarPorId(prestamo.getId());
             
             double nuevoSaldo = prestamoActualizado.getSaldoPendiente();
             
@@ -359,7 +359,7 @@ public class TestIntegracion {
             System.out.println("✓ OK (" + totalEmpleados + " registros)");
             
             System.out.print("→ Verificando préstamos en BD... ");
-            int totalPrestamos = prestamoServicio.obtenerTotalPrestamos();
+            int totalPrestamos = GestorPrestamos.obtenerTotalPrestamos();
             if (totalPrestamos == 0) {
                 System.out.println("✗ FALLO");
                 return false;
@@ -416,7 +416,7 @@ public class TestIntegracion {
             ArrayList<Empleado> empleados = empleadoServicio.listarTodos();
             
             if (!clientes.isEmpty() && !empleados.isEmpty()) {
-                boolean creado = prestamoServicio.crearPrestamo(
+                boolean creado = GestorPrestamos.crearPrestamo(
                     clientes.get(0).getId(),
                     empleados.get(0).getId(),
                     100000, // Monto muy bajo (mínimo es 500,000)
@@ -435,7 +435,7 @@ public class TestIntegracion {
             // Test 3: No permitir interés inválido
             System.out.print("→ Validando interés inválido... ");
             if (!clientes.isEmpty() && !empleados.isEmpty()) {
-                boolean creado = prestamoServicio.crearPrestamo(
+                boolean creado = GestorPrestamos.crearPrestamo(
                     clientes.get(0).getId(),
                     empleados.get(0).getId(),
                     1000000,
@@ -500,25 +500,25 @@ public class TestIntegracion {
             
             // Cambiar estado de préstamo
             System.out.print("→ Cambiando estado de préstamo... ");
-            ArrayList<Prestamo> prestamos = prestamoServicio.buscarPorEstado("pendiente");
+            ArrayList<Prestamo> prestamos = GestorPrestamos.buscarPorEstado("pendiente");
             
             if (!prestamos.isEmpty()) {
                 Prestamo prestamo = prestamos.get(0);
-                boolean actualizado = prestamoServicio.actualizarEstado(prestamo.getId(), "vencido");
+                boolean actualizado = GestorPrestamos.actualizarEstado(prestamo.getId(), "vencido");
                 
                 if (!actualizado) {
                     System.out.println("✗ FALLO");
                     return false;
                 }
                 
-                Prestamo verificar = prestamoServicio.buscarPorId(prestamo.getId());
+                Prestamo verificar = GestorPrestamos.buscarPorId(prestamo.getId());
                 if (!verificar.getEstado().equals("vencido")) {
                     System.out.println("✗ FALLO (Estado no cambió)");
                     return false;
                 }
                 
                 // Restaurar estado
-                prestamoServicio.actualizarEstado(prestamo.getId(), "pendiente");
+                GestorPrestamos.actualizarEstado(prestamo.getId(), "pendiente");
             }
             System.out.println("✓ OK");
             
@@ -544,7 +544,7 @@ public class TestIntegracion {
         try {
             // Calcular cartera total
             System.out.print("→ Calculando cartera total... ");
-            double cartera = prestamoServicio.calcularCarteraTotal();
+            double cartera = GestorPrestamos.calcularCarteraTotal();
             if (cartera < 0) {
                 System.out.println("✗ FALLO");
                 return false;
@@ -571,7 +571,7 @@ public class TestIntegracion {
             
             // Obtener préstamos vencidos
             System.out.print("→ Obteniendo préstamos vencidos... ");
-            ArrayList<Prestamo> vencidos = prestamoServicio.obtenerPrestamosVencidos();
+            ArrayList<Prestamo> vencidos = GestorPrestamos.obtenerPrestamosVencidos();
             System.out.println("✓ OK (" + vencidos.size() + " vencidos)");
             
             System.out.println("\n✓ TEST 8: PASADO\n");

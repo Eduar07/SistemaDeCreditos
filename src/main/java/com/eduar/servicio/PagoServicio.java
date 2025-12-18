@@ -17,12 +17,12 @@ public class PagoServicio {
     
     private PagoDAOImpl pagoDAO;
     private PrestamoDAOImpl prestamoDAO;
-    private PrestamoServicio prestamoServicio;
+    private GestorPrestamos GestorPrestamos;
     
     public PagoServicio() {
         this.pagoDAO = new PagoDAOImpl();
         this.prestamoDAO = new PrestamoDAOImpl();
-        this.prestamoServicio = new PrestamoServicio();
+        this.GestorPrestamos = new GestorPrestamos();
     }
     
     
@@ -71,7 +71,7 @@ public class PagoServicio {
                 nuevoSaldo = 0;
             }
             
-            prestamoServicio.actualizarSaldoPendiente(prestamoId, nuevoSaldo);
+            GestorPrestamos.actualizarSaldoPendiente(prestamoId, nuevoSaldo);
             
             // Mostrar resumen
             System.out.println("╔═══════════════════════════════════════╗");
@@ -143,7 +143,7 @@ public class PagoServicio {
         boolean eliminado = pagoDAO.eliminar(id);
         
         if (eliminado) {
-            prestamoServicio.actualizarSaldoPendiente(prestamo.getId(), nuevoSaldo);
+            GestorPrestamos.actualizarSaldoPendiente(prestamo.getId(), nuevoSaldo);
             System.out.println("✓ Pago eliminado y saldo restaurado");
         }
         
