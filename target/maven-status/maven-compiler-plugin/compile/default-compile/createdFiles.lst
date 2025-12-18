@@ -1,6 +1,7 @@
 com/eduar/servicio/PagoServicio.class
 com/eduar/util/ConstantesJava.class
 com/eduar/modelo/Persona.class
+com/eduar/util/ColoresConsola.class
 com/eduar/util/Validador.class
 com/eduar/servicio/ClienteServicio.class
 com/eduar/Main.class
@@ -21,7 +22,7 @@ com/eduar/dao/PrestamoDAOImpl.class
 com/eduar/excepcion/PrestamoException.class
 com/eduar/dao/EmpleadoDAOImpl.class
 com/eduar/modelo/Pago.class
-com/eduar/servicio/PrestamoServicio.class
 com/eduar/util/ConexionDb.class
 com/eduar/TestValidador.class
 com/eduar/MenuPrincipal.class
+com/eduar/servicio/GestorPrestamos.class

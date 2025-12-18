@@ -296,7 +296,7 @@ public class GestorPrestamos {
     
     private boolean validarCuotas(int cuotas) {
         // Entre 3 y 60 meses
-        return cuotas >= 3 && cuotas <= 60;
+        return cuotas >= 3 && cuotas <= 60;1
     }
     
     private boolean validarFecha(LocalDate fecha) {

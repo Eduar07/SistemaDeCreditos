@@ -313,7 +313,7 @@ public class MenuPrincipal {
         
         //aqui en menu tenemos tambien la seccion de listar prestamos//
 
-        
+
         ArrayList<Prestamo> prestamos = GestorPrestamos.listarTodos();
         boolean tienePrestamos = false;
         
@@ -656,7 +656,7 @@ public class MenuPrincipal {
         
         System.out.println("Empleado: " + empleado.getNombre());
         
-        System.out.print("Monto del préstamo ($500,000 - $50,000,000): ");
+        System.out.print("Monto del préstamo ($1 - $50,000,000): ");
         double monto = leerDouble();
         scanner.nextLine();
         
